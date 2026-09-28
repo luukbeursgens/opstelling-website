@@ -33,7 +33,7 @@ jobs:
             git --no-pager diff -- . ':(exclude)img' | head -60
             exit 1
           fi
-          echo "De gebouwde bestanden zijn bij.
+          echo "De gebouwde bestanden zijn bij."
 
       - run: npm ci || npm install
       - run: npx playwright install --with-deps chromium
@@ -55,4 +55,6 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: npx --yes netlify-cli@17 deploy --prod --dir . --message "${{ github.event.head_commit.message }}"
+          # via een variabele, zodat aanhalingstekens in een commit-bericht niets breken
+          COMMIT_BERICHT: ${{ github.event.head_commit.message }}
+        run: npx --yes netlify-cli@17 deploy --prod --dir . --message "$COMMIT_BERICHT"
