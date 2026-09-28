@@ -1,0 +1,8 @@
+tests
+node_modules
+.github
+build.py
+package.json
+package-lock.json
+playwright.config.js
+README.md

@@ -1,0 +1,54 @@
+name: Controleren en publiceren
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pagina's bouwen
+        run: python3 build.py
+
+      - name: Controleren of de gebouwde bestanden in de repository bijgewerkt zijn
+        run: |
+          if [ -n "$(git status --porcelain '*.html' sitemap.xml robots.txt)" ]; then
+            echo "De HTML in de repository loopt achter op build.py."
+            echo "Draai lokaal 'python3 build.py' en commit de wijzigingen."
+            git --no-pager diff --stat
+            exit 1
+          fi
+
+      - run: npm ci || npm install
+      - run: npx playwright install --with-deps chromium
+
+      - name: SEO-controles draaien
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      # Alleen publiceren vanaf main, en alleen als alles hierboven is geslaagd
+      - name: Publiceren naar Netlify
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: npx --yes netlify-cli@17 deploy --prod --dir . --message "${{ github.event.head_commit.message }}"
