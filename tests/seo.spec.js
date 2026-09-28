@@ -193,3 +193,12 @@ test('knoppen naar de app openen account aanmaken; geen privacypagina, geen O13,
     await expect(page.locator('.plan.featured')).toContainText('Per kwartaal opzegbaar');
   }
 });
+
+test('stijlbestand heeft een versienummer dat bij de inhoud past', async ({ page }) => {
+  const crypto = await import('crypto');
+  const verwacht = crypto.createHash('sha256').update(fs.readFileSync(path.join(process.cwd(), 'style.css'))).digest('hex').slice(0, 10);
+  for (const p of PAGINAS) {
+    await page.goto(p);
+    expect(await page.getAttribute('link[rel=stylesheet]', 'href'), `stijl op ${p}`).toBe(`/style.css?v=${verwacht}`);
+  }
+});

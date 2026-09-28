@@ -28,6 +28,12 @@ GRATIS = "3"            # wedstrijden gratis per team
 CF_TOKEN = ""
 
 
+# Versienummer van de stijl: verandert style.css, dan verandert het adres, en
+# halen browsers meteen de nieuwe versie op in plaats van een oude uit hun geheugen.
+import hashlib
+CSS_VERSIE = hashlib.sha256((OUT / "style.css").read_bytes()).hexdigest()[:10]
+
+
 def page(path, title, description, body, extra_ld=None, keywords_hint="", index=True):
     url = SITE + path
     # Let op: geen backslash binnen een f-string, anders werkt dit niet op oudere Python-versies
@@ -80,7 +86,7 @@ def page(path, title, description, body, extra_ld=None, keywords_hint="", index=
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="preload" href="/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css?v={CSS_VERSIE}">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 {analytics}</head>
 <body>
