@@ -99,7 +99,7 @@ def page(path, title, description, body, extra_ld=None, keywords_hint="", index=
   <div class="wrap">
     <div>
       <a class="logo" href="/"><img src="/img/icon.png" alt="" width="34" height="34">Opstelling</a>
-      <p>Eerlijke speeltijd voor elk jeugdteam. Gemaakt door een jeugdtrainer, voor jeugdtrainers. Niet verbonden aan de KNVB.</p>
+      <p>Eerlijke speeltijd voor elk jeugdteam. Gemaakt door jeugdtrainers, voor jeugdtrainers. Niet verbonden aan de KNVB.</p>
     </div>
     <nav aria-label="Voettekst">{voetmenu}</nav>
   </div>
@@ -206,7 +206,7 @@ home_faq = [
     ("Houdt de app rekening met de posities van spelers?", "Als je dat aanzet wel. Je geeft per speler aan waar hij goed uit de voeten kan, en de app stelt spelers zoveel mogelijk zo op, zonder de eerlijke speeltijd los te laten."),
 ]
 stappen = [
-    ("Klaarzetten", "Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per kwart"),
+    ("Klaarzetten", "Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf. Met een druk op de knop heb je een eerlijke opstelling.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per wedstrijddeel"),
     ("Spelen", "Start de klok, noteer doelpunten en volg de wisselmomenten. Medetrainers kijken live mee en kunnen overnemen.", "site-wedstrijd.webp", "Het wedstrijdscherm met klok, stand en het volgende wisselmoment", "Tijdens de wedstrijd"),
     ("Delen", "Sluit af en deel het verslag met de ouders, met de uitslag, het verloop en wie er scoorde.", "verslag.webp", "Deelbaar wedstrijdverslag met uitslag en doelpuntenmakers", "Het verslag voor de ouders"),
     ("Bijhouden", "Zie per speler de speeltijd en doelpunten over het hele seizoen. De volgende opstelling houdt daar rekening mee.", "site-seizoen.webp", "Het seizoen in cijfers met topscorers en speeltijd", "Speeltijd over het seizoen"),
@@ -239,7 +239,7 @@ page("/",
       <ul class="checks">
         <li>Eerste {GRATIS} wedstrijden gratis, zonder betaalgegevens</li>
         <li>Werkt op elke telefoon, niets te installeren</li>
-        <li>Medetrainers kijken gratis mee</li>
+        <li>Medetrainers kunnen gratis toegevoegd worden</li>
       </ul>
     </div>
     <div class="hero-beeld">
@@ -262,7 +262,7 @@ page("/",
   <div class="wrap">
     <div class="head">
       <h2>Geen briefje met streepjes meer</h2>
-      <p>Trainers gebruiken Opstelling omdat het rekenwerk verdwijnt en de rust langs de lijn terugkomt.</p>
+      <p>Geen gepuzzel, focus langs de lijn op coaching.</p>
     </div>
     <div class="benefits">
       <article class="benefit"><span class="ic" aria-hidden="true">{ICOON["balk"]}</span><h3>Iedereen speelt evenveel</h3><p>De speeltijd wordt zo gelijk mogelijk verdeeld. Wie vorige week minder speelde, krijgt de week erna voorrang, ook als er ineens meer kinderen zijn.</p></article>
@@ -277,7 +277,7 @@ page("/",
   <div class="wrap">
     <div class="head">
       <h2>Van aanwezigheid tot eindstand</h2>
-      <p>Maak één keer je team aan met het juiste niveau; de KNVB-regels voor speelduur, aantal spelers en wisselmomenten staan er dan automatisch bij. Daarna doorloop je elke wedstrijd in vier stappen.</p>
+      <p>Maak één keer je team en kies het niveau; de KNVB-regels voor speelduur, aantal spelers en wisselmomenten staan er dan automatisch bij. Daarna doorloop je elke wedstrijd in vier stappen.</p>
     </div>
     <div class="tabs">
       {tab_knoppen}
@@ -291,7 +291,7 @@ page("/",
   <div class="wrap split">
     <div>
       <span class="eyebrow"><b></b>Na de wedstrijd</span>
-      <h2>Ouders zien wat hun kind deed</h2>
+      <h2>Ouders krijgen een kort wedstrijdverslag</h2>
       <p>Met één tik maak je een verslag als afbeelding: de eindstand, het verloop per helft en wie er scoorde. Klaar om in de groepsapp te zetten, zonder dat je iets hoeft te typen.</p>
     </div>
     <div class="report"><img src="/img/verslag.webp" width="810" height="1088" alt="Wedstrijdverslag VV De Vaart JO8-1 tegen SV Westerkwartier, eindstand 2–1" loading="lazy"></div>
@@ -301,7 +301,7 @@ page("/",
 <section class="block pricing band" id="prijs">
   <div class="wrap">
     <div class="head">
-      <h2>Begin gratis, betaal per team</h2>
+      <h2>Probeer gratis, betaal per team na de derde wedstrijd</h2>
       <p>Probeer het rustig uit met je eigen team. Pas als je doorgaat, betaal je een klein bedrag per team.</p>
     </div>
     {prijskaarten()}
@@ -323,10 +323,10 @@ page("/",
 
 # ------------------------------------------------- wisselschema maken
 ws_faq = [
-    ("Mag je bij de pupillen onbeperkt wisselen?", "Ja. Bij de pupillen mag je doorwisselen; de onderbrekingen tussen de kwarten en de rust zijn de natuurlijke momenten."),
+    ("Mag je bij de pupillen onbeperkt wisselen?", "Ja. Bij de pupillen mag je doorwisselen; de time-outs en de rust zijn de natuurlijke momenten."),
     ("Wat als er iemand geblesseerd raakt of te laat komt?", "Dan klopt je schema niet meer. In Opstelling geef je de wijziging door en maakt de app de rest van de wedstrijd opnieuw, met de al gespeelde minuten erin verwerkt."),
     ("Kan een medetrainer hetzelfde schema zien?", "Ja. Iedere trainer van het team ziet dezelfde wedstrijd, kan de opstelling klaarzetten en tijdens de wedstrijd live meekijken."),
-    ("Moet de keeper ook in het veld spelen?", "Als je met wisselende keepers speelt wel, en de app regelt dat: wie een helft keept, krijgt in de andere helft veldtijd."),
+    ("Kan de keeper ook in het veld spelen?", "Als je met wisselende keepers speelt wel, en de app regelt dat: wie een helft keept, krijgt in de andere helft veldtijd."),
 ]
 page("/wisselschema-maken/",
      "Wisselschema maken voor jeugdvoetbal: zo doe je het snel",
@@ -334,18 +334,18 @@ page("/wisselschema-maken/",
      f"""
 <section class="prose">
   <h1>Een wisselschema maken voor je jeugdteam</h1>
-  <p class="lead">Een wisselschema moet twee dingen doen: iedereen speelt ongeveer evenveel, en jij hoeft langs de lijn niet te rekenen. Dat tweede is precies waar het bij een schema op papier misgaat.</p>
+  <p class="lead">Een goed wisselschema zorgt ervoor dat elk kind ongeveer evenveel speeltijd krijgt en dat jij daar niet voor hoeft te rekenen langs de lijn. In de praktijk blijkt dat op papier toch een heel gedoe.</p>
 
-  <h2>Waarom het op papier zelden standhoudt</h2>
+  <h2>Wat maakt een papiertje lastig</h2>
   <ul>
     <li>Op vrijdagavond melden er twee kinderen af en klopt je indeling niet meer.</li>
     <li>Een blessure of een late aankomst gooit de rest van de wedstrijd om.</li>
     <li>Je weet aan het eind niet meer wie nu precies hoe lang speelde, dus de week erna begin je weer bij nul.</li>
-    <li>Keepen telt mee als speeltijd, terwijl dat kind niet gevoetbald heeft.</li>
+    <li>Je rouleert keepers, dus het is lastig om bij te houden hoeveel speeltijd in het veld iedereen heeft.</li>
   </ul>
 
-  <h2>Hoe Opstelling het doet</h2>
-  <p>Je vinkt aan wie er is en kiest de keepers. De app maakt daarna het schema: wie speelt welk kwart, wie wisselt wanneer, en wie staat waar. Tijdens de wedstrijd loopt de klok mee en zie je het volgende wisselmoment met de namen erbij.</p>
+  <h2>Hoe de Opstelling app het doet</h2>
+  <p>Je vinkt aan wie er is en kiest de keepers. De app maakt daarna het schema: wie speelt welk deel, wie wisselt wanneer, en wie staat waar. Tijdens de wedstrijd loopt de klok mee en zie je het volgende wisselmoment met de namen erbij.</p>
   <p>Wijzigt er iets, dan past de app de rest van de wedstrijd aan met de al gespeelde minuten erin verwerkt. En de minuten van vandaag tellen automatisch mee bij de volgende wedstrijd, zodat wie nu minder speelde, dan voorrang krijgt.</p>
 
   <h2>Je houdt zelf de regie</h2>
