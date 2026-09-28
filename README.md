@@ -77,6 +77,10 @@ GitHub Actions bouwt daarna opnieuw, controleert of jouw gebouwde bestanden klop
 
 Op een pull request draaien dezelfde controles, maar wordt er niet gepubliceerd.
 
+De site gaat altijd naar het echte adres. Zolang `PUBLIEK = False` in `build.py` staat, weren robots.txt en elke pagina zoekmachines: wie het adres kent kan kijken, maar Google neemt de site niet op. Zet `PUBLIEK = True` zodra de site gevonden mag worden.
+
+Opnieuw publiceren zonder wijziging: GitHub > Actions > Controleren en publiceren > Run workflow.
+
 ### Eenmalig instellen
 
 1. Zet deze map in een eigen GitHub-repository (bijvoorbeeld `opstelling-website`).

@@ -50,21 +50,21 @@ jobs:
           retention-days: 7
 
       # Alleen publiceren vanaf main, en alleen als alles hierboven is geslaagd.
-      # Staat PUBLIEK in build.py op False, dan gaat het naar een tijdelijk voorbeeldadres
-      # in plaats van naar je eigen domein.
+      # De site gaat altijd naar het echte adres (anders registreert Netlify het
+      # contactformulier niet). Zolang PUBLIEK in build.py op False staat, weren
+      # robots.txt en elke pagina zoekmachines: wie het adres kent kan kijken,
+      # maar Google neemt de site niet op.
       - name: Publiceren naar Netlify
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           # via een variabele, zodat aanhalingstekens in een commit-bericht niets breken
-          COMMIT_BERICHT: ${{ github.event.head_commit.message }}
+          COMMIT_BERICHT: ${{ github.event.head_commit.message || 'Handmatig gepubliceerd' }}
         run: |
           if grep -q "^PUBLIEK = True" build.py; then
-            echo "PUBLIEK staat aan: publiceren naar het echte adres."
-            npx --yes netlify-cli@17 deploy --prod --dir . --message "$COMMIT_BERICHT"
+            echo "PUBLIEK staat aan: de site is openbaar en vindbaar in Google."
           else
-            echo "PUBLIEK staat uit: publiceren naar een tijdelijk voorbeeldadres."
-            echo "Zet PUBLIEK op True in build.py zodra de site openbaar mag."
-            npx --yes netlify-cli@17 deploy --dir . --message "$COMMIT_BERICHT"
+            echo "PUBLIEK staat uit: de site staat online, maar zoekmachines worden geweerd."
           fi
+          npx --yes netlify-cli@17 deploy --prod --dir . --message "$COMMIT_BERICHT"

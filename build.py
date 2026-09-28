@@ -206,7 +206,7 @@ home_faq = [
     ("Houdt de app rekening met de posities van spelers?", "Als je dat aanzet wel. Je geeft per speler aan waar hij goed uit de voeten kan, en de app stelt spelers zoveel mogelijk zo op, zonder de eerlijke speeltijd los te laten."),
 ]
 stappen = [
-    ("Klaarzetten", "Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf. Met een druk op de knop heb je een eerlijke opstelling.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per wedstrijddeel"),
+    ("Klaarzetten", "Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf. Met een druk op de knop heb je een eerlijke opstelling.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per kwart"),
     ("Spelen", "Start de klok, noteer doelpunten en volg de wisselmomenten. Medetrainers kijken live mee en kunnen overnemen.", "site-wedstrijd.webp", "Het wedstrijdscherm met klok, stand en het volgende wisselmoment", "Tijdens de wedstrijd"),
     ("Delen", "Sluit af en deel het verslag met de ouders, met de uitslag, het verloop en wie er scoorde.", "verslag.webp", "Deelbaar wedstrijdverslag met uitslag en doelpuntenmakers", "Het verslag voor de ouders"),
     ("Bijhouden", "Zie per speler de speeltijd en doelpunten over het hele seizoen. De volgende opstelling houdt daar rekening mee.", "site-seizoen.webp", "Het seizoen in cijfers met topscorers en speeltijd", "Speeltijd over het seizoen"),
@@ -345,7 +345,7 @@ page("/wisselschema-maken/",
   </ul>
 
   <h2>Hoe de Opstelling app het doet</h2>
-  <p>Je vinkt aan wie er is en kiest de keepers. De app maakt daarna het schema: wie speelt welk deel, wie wisselt wanneer, en wie staat waar. Tijdens de wedstrijd loopt de klok mee en zie je het volgende wisselmoment met de namen erbij.</p>
+  <p>Je vinkt aan wie er is en kiest de keepers. De app maakt daarna het schema: wie speelt welk kwart, wie wisselt wanneer, en wie staat waar. Tijdens de wedstrijd loopt de klok mee en zie je het volgende wisselmoment met de namen erbij.</p>
   <p>Wijzigt er iets, dan past de app de rest van de wedstrijd aan met de al gespeelde minuten erin verwerkt. En de minuten van vandaag tellen automatisch mee bij de volgende wedstrijd, zodat wie nu minder speelde, dan voorrang krijgt.</p>
 
   <h2>Je houdt zelf de regie</h2>
@@ -397,16 +397,16 @@ page("/speeltijd-eerlijk-verdelen/",
 
 # ------------------------------------------------ knvb wedstrijdvormen
 rows = [
-    ("O7", "4 tegen 4", "Nee", "3 × 15 minuten", "6 blokken van 7,5 minuut"),
-    ("O8 en O9", "6 tegen 6", "Ja", "2 × 20 minuten", "4 kwarten van 10 minuten"),
-    ("O10", "6 tegen 6", "Ja", "2 × 25 minuten", "4 kwarten van 12,5 minuut"),
-    ("O11 en O12", "8 tegen 8", "Ja", "2 × 30 minuten", "4 kwarten van 15 minuten"),
+    ("O7", "4 tegen 4", "Nee", "3 × 15 minuten", "Time-out na 7,5 minuut per wedstrijdje (6 blokken)"),
+    ("O8 en O9", "6 tegen 6", "Ja", "2 × 20 minuten", "Time-out na 10 minuten per helft (4 kwarten)"),
+    ("O10", "6 tegen 6", "Ja", "2 × 25 minuten", "Time-out na 12,5 minuut per helft (4 kwarten)"),
+    ("O11 en O12", "8 tegen 8", "Ja", "2 × 30 minuten", "Time-out na 15 minuten per helft (4 kwarten)"),
 ]
 tabel = "".join(f"<tr><th scope='row'>{a}</th><td>{b}</td><td>{c}</td><td>{d}</td><td>{e}</td></tr>" for a, b, c, d, e in rows)
 knvb_faq = [
-    ("Hoe lang duurt een wedstrijd bij O8?", "Twee keer twintig minuten, gespeeld in vier kwarten van tien minuten."),
+    ("Hoe lang duurt een wedstrijd bij O8?", "Twee helften van twintig minuten, met in elke helft na tien minuten een korte time-out. Zo speel je in feite vier kwarten van tien minuten."),
     ("Spelen pupillen met een keeper?", "Vanaf O8 wel. Bij O7 wordt 4 tegen 4 gespeeld zonder keeper."),
-    ("Wanneer mag je wisselen bij de pupillen?", "Bij de pupillen mag je onbeperkt wisselen. In de praktijk doen trainers dat bij de onderbrekingen: tussen de kwarten en in de rust."),
+    ("Wanneer mag je wisselen bij de pupillen?", "Bij de pupillen mag je onbeperkt wisselen. In de praktijk doen trainers dat bij de time-outs en in de rust."),
 ]
 page("/knvb-wedstrijdvormen/",
      "KNVB-wedstrijdvormen O7 t/m O12: speelduur, spelers en wisselen",
@@ -421,12 +421,13 @@ page("/knvb-wedstrijdvormen/",
     <thead><tr><th scope="col">Leeftijd</th><th scope="col">Vorm</th><th scope="col">Keeper</th><th scope="col">Speelduur</th><th scope="col">Handige wisselmomenten</th></tr></thead>
     <tbody>{tabel}</tbody>
   </table></div>
+  <p>Elke helft heeft halverwege een korte time-out. In de praktijk speel je dus vier kwarten, met de time-outs en de rust als wisselmomenten.</p>
 
   <h2>Wat betekent dit voor je speeltijd?</h2>
   <p>Bij 6 tegen 6 met 2 × 20 minuten zijn er 240 speelminuten te verdelen (zes plekken maal veertig minuten). Met negen kinderen komt dat neer op ongeveer 27 minuten per kind, keepen meegerekend. Zijn er twaalf kinderen, dan blijft er twintig minuten per kind over, en wordt het belangrijker om over de weken heen bij te houden wie minder speelde.</p>
 
   <h2>Wisselen bij de pupillen</h2>
-  <p>Bij de pupillen mag je onbeperkt wisselen. De onderbrekingen tussen de kwarten zijn de natuurlijke momenten. Wissel je alleen in de rust, dan speelt iedereen een hele of een halve wedstrijd, en zijn de verschillen groot.</p>
+  <p>Bij de pupillen mag je onbeperkt wisselen. De time-outs en de rust zijn de natuurlijke momenten. Wissel je alleen in de rust, dan speelt iedereen een hele of een halve wedstrijd, en zijn de verschillen groot.</p>
 </section>
 
 {faq_html(knvb_faq)}
