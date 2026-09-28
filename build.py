@@ -215,7 +215,7 @@ stappen = [
     ("Klaarzetten", "Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf. Met een druk op de knop heb je een eerlijke opstelling.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per kwart"),
     ("Spelen", "Start de klok, noteer doelpunten en volg de wisselmomenten. Medetrainers kijken live mee en kunnen overnemen.", "site-wedstrijd.webp", "Het wedstrijdscherm met klok, stand en het volgende wisselmoment", "Tijdens de wedstrijd"),
     ("Delen", "Sluit af en deel het verslag met de ouders, met de uitslag, het verloop en wie er scoorde.", "verslag.webp", "Deelbaar wedstrijdverslag met uitslag en doelpuntenmakers", "Het verslag voor de ouders"),
-    ("Bijhouden", "Zie per speler de speeltijd en doelpunten over het hele seizoen. De volgende opstelling houdt daar rekening mee.", "site-seizoen.webp", "Het seizoen in cijfers met topscorers en speeltijd", "Speeltijd over het seizoen"),
+    ("Bijhouden", "Zie per speler de speeltijd en doelpunten over het hele seizoen. De volgende opstelling houdt daar rekening mee.", "site-seizoen.webp", "Het seizoen in cijfers met topscorers en speeltijd", "Automatisch seizoensoverzicht"),
 ]
 tab_knoppen = "".join(f'<input type="radio" name="stap" id="t{i}"{" checked" if i == 1 else ""}>' for i in range(1, 5))
 tab_labels = "".join(
@@ -237,7 +237,7 @@ page("/",
     <div>
       <span class="eyebrow"><b></b>Voor jeugdteams van O7 tot en met O12</span>
       <h1>Eerlijke speeltijd voor <em>elk kind</em>, zonder gepuzzel</h1>
-      <p class="lead">Opstelling maakt in een minuut een opstelling voor je jeugdteam, houdt bij wie hoeveel speelt en telt dat mee in de volgende wedstrijd.</p>
+      <p class="lead">Maak in een minuut een opstelling voor je jeugdteam, houd bij wie hoeveel speelt en tel dat mee in de volgende wedstrijd.</p>
       <div class="actions">
         <a class="btn btn-main" href="{AANMELDEN}">Probeer gratis</a>
         <a class="btn btn-ghost" href="#hoe">Bekijk hoe het werkt</a>
@@ -298,7 +298,7 @@ page("/",
     <div>
       <span class="eyebrow"><b></b>Na de wedstrijd</span>
       <h2>Ouders krijgen een kort wedstrijdverslag</h2>
-      <p>Met één tik maak je een verslag als afbeelding: de eindstand, het verloop per helft en wie er scoorde. Klaar om in de groepsapp te zetten, zonder dat je iets hoeft te typen.</p>
+      <p>Met één tik maak je een deelbaar verslag: de eindstand, het verloop per helft en wie er scoorde. Klaar om in de groepsapp te zetten, zonder dat je iets hoeft te typen.</p>
     </div>
     <div class="report"><img src="/img/verslag.webp" width="810" height="1088" alt="Wedstrijdverslag VV De Vaart JO8-1 tegen SV Westerkwartier, eindstand 2–1" loading="lazy"></div>
   </div>
@@ -307,7 +307,7 @@ page("/",
 <section class="block pricing band" id="prijs">
   <div class="wrap">
     <div class="head">
-      <h2>Probeer gratis, betaal per team na de derde wedstrijd</h2>
+      <h2>Probeer gratis!</h2>
       <p>Probeer het rustig uit met je eigen team. Pas als je doorgaat, betaal je een klein bedrag per team.</p>
     </div>
     {prijskaarten()}
@@ -465,7 +465,7 @@ page("/prijzen/",
 
 <section class="prose">
   <h2>Waarom niet gratis?</h2>
-  <p>Opstelling draait op een server die geld kost, en wordt onderhouden naast een gewone baan. Een klein bedrag per team houdt de app onafhankelijk: geen advertenties, geen sponsors en geen doorverkoop van gegevens van kinderen.</p>
+  <p>Opstelling draait op een server die geld kost. Een klein bedrag per team houdt de app onafhankelijk: geen advertenties, geen sponsors en geen doorverkoop van gegevens van kinderen.</p>
   <h2>Voor de hele club?</h2>
   <p>Wil je met meerdere teams tegelijk aan de slag, of als club afspraken maken? <a href="/contact/">Laat het weten</a>, dan kijken we naar een clubtarief.</p>
 </section>
