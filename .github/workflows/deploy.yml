@@ -49,6 +49,16 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+      # Alleen de bestanden van de website zelf gaan naar Netlify: geen tests,
+      # build.py of instellingen. Dat maakt het publiceren kleiner en sneller.
+      - name: Map met alleen de website klaarzetten
+        run: |
+          rm -rf _publiceren && mkdir _publiceren
+          git ls-files \
+            | grep -Ev '^(\.|tests/|build\.py$|package(-lock)?\.json$|playwright\.config\.js$|README\.md$|netlify\.toml$|__pycache__/|opstelling-website/)' \
+            | while read -r f; do mkdir -p "_publiceren/$(dirname "$f")"; cp "$f" "_publiceren/$f"; done
+          echo "Dit gaat online:"; find _publiceren -type f | sort
+
       # Alleen publiceren vanaf main, en alleen als alles hierboven is geslaagd.
       # De site gaat altijd naar het echte adres (anders registreert Netlify het
       # contactformulier niet). Zolang PUBLIEK in build.py op False staat, weren
@@ -56,6 +66,7 @@ jobs:
       # maar Google neemt de site niet op.
       - name: Publiceren naar Netlify
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        timeout-minutes: 10
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -67,4 +78,4 @@ jobs:
           else
             echo "PUBLIEK staat uit: de site staat online, maar zoekmachines worden geweerd."
           fi
-          npx --yes netlify-cli@17 deploy --prod --dir . --message "$COMMIT_BERICHT"
+          npx --yes netlify-cli@27.10.1 deploy --prod --no-build --dir _publiceren --timeout 480 --message "$COMMIT_BERICHT"
