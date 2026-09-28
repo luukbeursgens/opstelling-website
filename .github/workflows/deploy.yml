@@ -25,12 +25,15 @@ jobs:
 
       - name: Controleren of de gebouwde bestanden in de repository bijgewerkt zijn
         run: |
-          if [ -n "$(git status --porcelain '*.html' sitemap.xml robots.txt)" ]; then
-            echo "De HTML in de repository loopt achter op build.py."
-            echo "Draai lokaal 'python3 build.py' en commit de wijzigingen."
-            git --no-pager diff --stat
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::De bestanden in de repository lopen achter op build.py."
+            echo "Draai lokaal 'python3 build.py', commit de wijzigingen en push opnieuw."
+            echo "Dit verschilt:"
+            git status --short
+            git --no-pager diff -- . ':(exclude)img' | head -60
             exit 1
           fi
+          echo "De gebouwde bestanden zijn bij.
 
       - run: npm ci || npm install
       - run: npx playwright install --with-deps chromium
@@ -43,6 +46,7 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+          if-no-files-found: ignore
           retention-days: 7
 
       # Alleen publiceren vanaf main, en alleen als alles hierboven is geslaagd

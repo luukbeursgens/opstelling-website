@@ -6,12 +6,11 @@ titels, beschrijvingen, canonieke adressen, gestructureerde gegevens,
 sitemap en robots.txt. Aanpassen? Wijzig de teksten hieronder en draai
 opnieuw: python3 build.py
 """
-import os, pathlib, datetime
+import os, pathlib
 
 SITE = "https://www.jouwdomein.nl"          # eigen domein; pas dit aan als je een ander domein neemt
 APP = "https://opstellingapp.netlify.app"
 OUT = pathlib.Path(__file__).parent
-TODAY = datetime.date.today().isoformat()
 
 NAV = [("/", "Home"), ("/wisselschema-maken/", "Wisselschema maken"),
        ("/speeltijd-eerlijk-verdelen/", "Eerlijke speeltijd"), ("/knvb-wedstrijdvormen/", "KNVB-wedstrijdvormen"),
@@ -406,9 +405,11 @@ def prioriteit(p):
         return "1.0"
     return "0.3" if p == "/privacy/" else "0.8"
 
+# Geen datum in de sitemap: die zou bij elke bouwdag verschillen, waardoor de
+# controle in de pipeline denkt dat de bestanden niet bijgewerkt zijn.
 urls = "".join(
-    "<url><loc>{}{}</loc><lastmod>{}</lastmod><changefreq>monthly</changefreq>"
-    "<priority>{}</priority></url>".format(SITE, p, TODAY, prioriteit(p)) for p in paths)
+    "<url><loc>{}{}</loc><changefreq>monthly</changefreq>"
+    "<priority>{}</priority></url>".format(SITE, p, prioriteit(p)) for p in paths)
 (OUT / "sitemap.xml").write_text(
     f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',
     encoding="utf-8")
