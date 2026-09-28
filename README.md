@@ -1,6 +1,6 @@
 # Website van Opstelling
 
-Statische marketingsite: geen JavaScript, vijf pagina's, klaar voor Google.
+Statische marketingsite: geen eigen JavaScript, vijf pagina's, klaar voor Google. Alleen de bezoekersteller van Cloudflare wordt geladen (als die aan staat).
 
 ## Pagina's en hun zoekvraag
 
@@ -10,7 +10,7 @@ Statische marketingsite: geen JavaScript, vijf pagina's, klaar voor Google.
 | `/wisselschema-maken/` | wisselschema maken jeugdvoetbal, wisselschema pupillen |
 | `/speeltijd-eerlijk-verdelen/` | speeltijd eerlijk verdelen, speelminuten jeugdvoetbal |
 | `/knvb-wedstrijdvormen/` | KNVB wedstrijdvormen, speelduur O8, hoe lang duurt een wedstrijd O10 |
-| `/privacy/` | (niet voor Google, wel voor vertrouwen bij clubs) |
+| `/contact/` | (contactformulier; berichten naar info@opstellingapp.nl) |
 
 ## Aanpassen
 
@@ -23,6 +23,36 @@ python3 build.py
 Dat schrijft de HTML-bestanden, de sitemap en robots.txt opnieuw.
 
 **Eigen domein?** Pas `SITE` bovenin `build.py` aan en draai opnieuw. Het adres van de app staat er als `APP` boven.
+
+## Bezoekers tellen (Cloudflare Web Analytics)
+
+1. Log in op dash.cloudflare.com en ga naar **Web Analytics** > **Add a site**.
+2. Vul het adres van de site in en kies de optie met het JavaScript-fragment (niet via Cloudflare DNS).
+3. Kopieer uit dat fragment de waarde achter `"token"`.
+4. Plak die bovenin `build.py` bij `CF_TOKEN = "..."` en draai `python3 build.py`.
+
+Daarna staat de teller op elke pagina. Leeg laten = geen teller.
+Cloudflare telt zonder cookies, dus er is geen cookiemelding nodig.
+
+## Contactformulier (Netlify Forms)
+
+Het formulier op `/contact/` wordt verwerkt door Netlify, zonder JavaScript. Eenmalig instellen in Netlify:
+
+1. **Forms** > **Enable form detection** aanzetten, en daarna één keer opnieuw publiceren.
+2. **Forms** > **Form notifications** > **Add notification** > **Email notification**: formulier `contact`, adres `info@opstellingapp.nl`.
+
+Na versturen komt de bezoeker op `/bedankt/` (die pagina staat niet in Google). Spam wordt tegengehouden met een verborgen veld.
+Netlify verwerkt gratis 100 berichten per maand.
+
+## Knoppen naar de app
+
+Alle knoppen gaan naar `AANMELDEN` (de app met `?account=nieuw`). De app laat daar "Maak je account aan" zien in plaats van "Inloggen".
+
+## Uiterlijk
+
+- Kleuren en opmaak staan in `style.css`.
+- Lettertypes staan in `fonts/` (Bricolage Grotesque en Figtree, open licentie OFL). Ze komen van de eigen site, niet van Google.
+- Schermafbeeldingen van de app staan als `.webp` in `img/`, gemaakt op drie keer schermresolutie.
 
 ## Testen
 
