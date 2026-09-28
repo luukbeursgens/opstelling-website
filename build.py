@@ -9,7 +9,7 @@ opnieuw: python3 build.py
 import os, pathlib
 
 SITE = "https://opstellingapp.nl"          # eigen domein; pas dit aan als je een ander domein neemt
-APP = "https://opstellingapp.netlify.app"
+APP = "https://app.opstellingapp.nl"
 AANMELDEN = APP + "/?account=nieuw"   # opent in de app meteen "Maak je account aan"
 CONTACT_MAIL = "info@opstellingapp.nl"
 OUT = pathlib.Path(__file__).parent

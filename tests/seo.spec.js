@@ -9,6 +9,7 @@ const SITE = fs.readFileSync(path.join(process.cwd(), 'build.py'), 'utf8').match
 const titels = new Set(), beschrijvingen = new Set();
 const BEACON = 'https://static.cloudflareinsights.com/beacon.min.js';
 const BUILD = fs.readFileSync(path.join(process.cwd(), 'build.py'), 'utf8');
+const APP = BUILD.match(/^APP = "([^"]+)"/m)[1];   // adres van de app uit build.py
 const TOKEN = (BUILD.match(/^CF_TOKEN = "([^"]*)"/m) || [])[1] || '';
 
 for (const p of PAGINAS) {
@@ -181,9 +182,10 @@ test('contactformulier gaat via Netlify naar een bedankpagina', async ({ page })
 test('knoppen naar de app openen account aanmaken; geen privacypagina, geen O13, opzegbaar per kwartaal', async ({ page }) => {
   for (const p of PAGINAS) {
     await page.goto(p);
-    const knoppen = await page.$$eval('a[href*="opstellingapp.netlify.app"]', as => as.map(a => a.getAttribute('href')));
+    const knoppen = await page.$$eval(`a[href^="${APP}"]`, as => as.map(a => a.getAttribute('href')));
     expect(knoppen.length).toBeGreaterThan(0);
-    for (const k of knoppen) expect(k, `knop op ${p}`).toBe('https://opstellingapp.netlify.app/?account=nieuw');
+    for (const k of knoppen) expect(k, `knop op ${p}`).toBe(`${APP}/?account=nieuw`);
+    await expect(page.locator('a[href*="netlify.app"]'), `oud adres op ${p}`).toHaveCount(0);
     await expect(page.locator('a[href^="/privacy"]'), `link naar privacy op ${p}`).toHaveCount(0);
     expect(await page.locator('body').innerText(), `O13 op ${p}`).not.toContain('O13');
   }
