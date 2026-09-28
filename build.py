@@ -18,7 +18,7 @@ NAV = [("/", "Home"), ("/wisselschema-maken/", "Wisselschema maken"),
        ("/speeltijd-eerlijk-verdelen/", "Eerlijke speeltijd"), ("/knvb-wedstrijdvormen/", "KNVB-wedstrijdvormen"),
        ("/prijzen/", "Prijzen"), ("/contact/", "Contact")]
 
-PUBLIEK = False         # False zolang de site nog niet openbaar mag zijn: geen zoekmachines
+PUBLIEK = True         # False zolang de site nog niet openbaar mag zijn: geen zoekmachines
 PRIJS = "6,99"          # per team, per kwartaal (per kwartaal opzegbaar)
 GRATIS = "3"            # wedstrijden gratis per team
 

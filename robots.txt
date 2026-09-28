@@ -1,3 +1,4 @@
-# Site is nog in aanbouw
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://opstellingapp.nl/sitemap.xml
