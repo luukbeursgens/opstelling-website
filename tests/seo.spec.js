@@ -59,11 +59,21 @@ for (const p of PAGINAS) {
   });
 }
 
-test('sitemap en robots kloppen', async ({ page }) => {
+const OPENBAAR = fs.readFileSync(path.join(process.cwd(), 'build.py'), 'utf8').includes('PUBLIEK = True');
+
+test('sitemap en robots kloppen bij de huidige stand', async ({ page }) => {
   const sm = await (await page.request.get('/sitemap.xml')).text();
   for (const p of PAGINAS) expect(sm).toContain(`<loc>${SITE}${p}</loc>`);
   const rb = await (await page.request.get('/robots.txt')).text();
-  expect(rb).toContain('Sitemap: ' + SITE + '/sitemap.xml');
+  if (OPENBAAR) {
+    expect(rb).toContain('Sitemap: ' + SITE + '/sitemap.xml');
+    expect(rb).not.toContain('Disallow: /');
+  } else {
+    // nog niet openbaar: zoekmachines moeten geweerd worden
+    expect(rb).toContain('Disallow: /');
+    await page.goto('/');
+    expect(await page.getAttribute('meta[name=robots]', 'content')).toBe('noindex, nofollow');
+  }
 });
 
 test('pagina is licht en laadt snel', async ({ page }) => {

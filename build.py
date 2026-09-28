@@ -16,6 +16,7 @@ NAV = [("/", "Home"), ("/wisselschema-maken/", "Wisselschema maken"),
        ("/speeltijd-eerlijk-verdelen/", "Eerlijke speeltijd"), ("/knvb-wedstrijdvormen/", "KNVB-wedstrijdvormen"),
        ("/prijzen/", "Prijzen")]
 
+PUBLIEK = False         # False zolang de site nog niet openbaar mag zijn: geen zoekmachines
 PRIJS = "6,99"          # per team, per drie maanden
 GRATIS = "3"            # wedstrijden gratis per team
 
@@ -49,7 +50,7 @@ def page(path, title, description, body, extra_ld=None, keywords_hint=""):
 <title>{title}</title>
 <meta name="description" content="{description}">
 <link rel="canonical" href="{url}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="{"index, follow, max-image-preview:large" if PUBLIEK else "noindex, nofollow"}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="nl_NL">
 <meta property="og:site_name" content="Opstelling">
@@ -413,5 +414,10 @@ urls = "".join(
 (OUT / "sitemap.xml").write_text(
     f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',
     encoding="utf-8")
-(OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+if PUBLIEK:
+    (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\n\nSitemap: {}/sitemap.xml\n".format(SITE), encoding="utf-8")
+else:
+    # nog niet openbaar: alle zoekmachines weren
+    (OUT / "robots.txt").write_text("# Site is nog in aanbouw\nUser-agent: *\nDisallow: /\n", encoding="utf-8")
 print("Site gebouwd:", ", ".join(paths))
+print("Zoekmachines:", "toegestaan" if PUBLIEK else "geweerd (PUBLIEK staat op False in build.py)")

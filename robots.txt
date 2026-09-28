@@ -1,4 +1,3 @@
+# Site is nog in aanbouw
 User-agent: *
-Allow: /
-
-Sitemap: https://www.jouwdomein.nl/sitemap.xml
+Disallow: /
