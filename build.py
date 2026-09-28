@@ -25,7 +25,7 @@ GRATIS = "3"            # wedstrijden gratis per team
 # Cloudflare Web Analytics: plak hier de token uit het Cloudflare-dashboard
 # (Web Analytics > je site > "Manage site" > JS snippet, de waarde achter "token").
 # Leeg laten = geen analytics. Cloudflare telt bezoeken zonder cookies.
-CF_TOKEN = ""
+CF_TOKEN = "622bc38b1c73451abece02918dc7e2ea"
 
 
 # Versienummer van de stijl: verandert style.css, dan verandert het adres, en
