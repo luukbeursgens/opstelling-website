@@ -1,6 +1,6 @@
 # Website van Opstelling
 
-Statische marketingsite: geen eigen JavaScript, vijf pagina's, klaar voor Google. Alleen de bezoekersteller van Cloudflare wordt geladen (als die aan staat).
+Statische marketingsite: geen eigen JavaScript, zeven pagina's, klaar voor Google en AI-assistenten. Alleen de bezoekersteller van Cloudflare wordt geladen (als die aan staat).
 
 ## Pagina's en hun zoekvraag
 
@@ -10,7 +10,15 @@ Statische marketingsite: geen eigen JavaScript, vijf pagina's, klaar voor Google
 | `/wisselschema-maken/` | wisselschema maken jeugdvoetbal, wisselschema pupillen |
 | `/speeltijd-eerlijk-verdelen/` | speeltijd eerlijk verdelen, speelminuten jeugdvoetbal |
 | `/knvb-wedstrijdvormen/` | KNVB wedstrijdvormen, speelduur O8, hoe lang duurt een wedstrijd O10 |
+| `/tips-en-tops-per-speler/` | tips en tops voetbal, spelersvolgsysteem jeugdvoetbal, voortgang spelers bijhouden |
+| `/voetbal-nl-kalender-koppelen/` | voetbal.nl kalender, voetbal.nl agenda koppelen, verzameltijd, wasschema voetbal |
 | `/contact/` | (contactformulier; berichten naar info@opstellingapp.nl) |
+
+Het menu bovenaan en de voettekst staan als `NAV` en `VOET` bovenin `build.py`. De sitemap en `llms.txt` worden gemaakt uit de pagina's zelf, dus een nieuwe pagina komt daar vanzelf in.
+
+## Voor AI-assistenten
+
+`llms.txt` is een korte samenvatting van de site in platte tekst (kernfeiten, prijs en alle pagina's), bedoeld voor ChatGPT, Claude, Perplexity en dergelijke. De functiepagina's hebben daarnaast een kruimelpad en veelgestelde vragen in de gestructureerde gegevens, en de homepagina een lijst met functies van de app.
 
 ## Aanpassen
 
@@ -61,7 +69,7 @@ npm install          # eenmalig, gebruikt @playwright/test
 npx playwright test
 ```
 
-De test controleert per pagina: unieke titel en beschrijving met de juiste lengte, canoniek adres, één h1, geldige gestructureerde gegevens, sociale kaart, alt-teksten, interne links, de knop naar de app, en of de pagina onder de 500 kB blijft.
+De test controleert per pagina: unieke titel en beschrijving met de juiste lengte, canoniek adres, één h1, geldige gestructureerde gegevens, sociale kaart, alt-teksten, interne links, de knop naar de app, of de pagina onder de 500 kB blijft, dat er op telefoon, tablet en laptop niets buiten beeld valt, en dat llms.txt alle pagina's noemt.
 
 ## Online zetten
 

@@ -239,3 +239,66 @@ main>section.contact{max-width:var(--wrap);padding-top:8px;display:grid;grid-tem
 .liever p{color:var(--muted);margin-bottom:10px}
 .prose .actions{margin-top:28px}
 @media (max-width:860px){main>section.contact{grid-template-columns:1fr}.formulier{padding:22px}.formulier .rij{grid-template-columns:1fr}}
+
+/* kruimelpad op de functiepagina's */
+.kruimel{font-size:14px;color:var(--muted);margin-bottom:18px}
+.kruimel a{color:var(--muted)}
+.kruimel a:hover{color:var(--ink)}
+
+/* homepagina: het hele seizoen, twee functies naast elkaar met beeld */
+.feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:center}
+.feat+.feat{margin-top:104px}
+.feat.om .feat-tekst{order:2}
+.feat h3{font-size:clamp(30px,4.2vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1.04}
+.feat-tekst>p{color:var(--muted);font-size:18px;margin-top:18px;max-width:30em}
+.vinkjes{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px;color:var(--muted)}
+.vinkjes li{display:flex;gap:10px;align-items:flex-start}
+.vinkjes li::before{content:"";margin-top:5px;width:16px;height:16px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4 10.5l3.5 3.5L16 6' fill='none' stroke='%232F7A4B' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.meer{display:inline-block;margin-top:26px;font-weight:700}
+.feat-beeld{position:relative;display:flex;justify-content:center}
+.feat-beeld::before{content:"";position:absolute;inset:0 -6% -4%;background:radial-gradient(closest-side,var(--glow),transparent 72%);pointer-events:none}
+.feat-beeld.oranje::before{background:radial-gradient(closest-side,var(--glow2),transparent 72%)}
+.feat-beeld .phone{margin-inline:0;transform:rotate(2deg)}
+.feat.om .feat-beeld .phone{transform:rotate(-2deg)}
+@media (max-width:860px){.feat{grid-template-columns:minmax(0,1fr);gap:40px}.feat.om .feat-tekst{order:0}.feat+.feat{margin-top:80px}}
+
+/* het plaatje voor de ouders */
+.plaatje{position:relative;width:min(360px,100%)}
+.plaatje img{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 40px 70px -34px var(--shadow);transform:rotate(-1.5deg)}
+.metplaatje{padding-bottom:36px}
+.metplaatje .phone{margin-right:120px;width:min(280px,72%)}
+.metplaatje .plaatje{position:absolute;right:0;bottom:0;width:min(230px,46%);z-index:2}
+.metplaatje .plaatje img{transform:rotate(-3deg)}
+@media (max-width:420px){.metplaatje .phone{margin-right:22%}}
+
+/* functiepagina's */
+.duo{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:40px 0 12px}
+.duo figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;width:min(300px,100%)}
+.duo .phone{width:100%}
+.duo figcaption{color:var(--muted);font-size:14px;text-align:center}
+.stappen{counter-reset:stap;list-style:none;padding:0!important;display:grid;gap:14px;margin:22px 0}
+.stappen li{counter-increment:stap;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 16px;background:var(--card);border:1px solid var(--rule);border-radius:18px;padding:18px 20px;margin:0!important}
+.stappen li::before{content:counter(stap);grid-row:span 2;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;background:var(--grass);color:var(--grass-ink)}
+.stappen b{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.015em;line-height:1.25}
+.stappen span{color:var(--muted);font-size:16px}
+.kolommen{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin:24px 0}
+.kolommen>div{background:var(--card);border:1px solid var(--rule);border-radius:18px;padding:20px 22px}
+.kolommen h3{font-size:20px;margin-bottom:10px}
+.kolommen ul{margin:0}
+@media (max-width:620px){.kolommen{grid-template-columns:minmax(0,1fr)}}
+.opm{font-size:14px;color:var(--muted);border-left:3px solid var(--rule);padding-left:14px;margin-top:28px}
+
+/* agendapagina: het plaatje voor de ouders uitgelicht */
+.ouderblok{background:var(--card);border-block:1px solid var(--rule)}
+.ouderblok .report{display:flex;justify-content:center}
+.ouderblok .report::before{background:radial-gradient(closest-side,var(--glow2),transparent 72%)}
+.ouderblok .report img{transform:rotate(-1.5deg)}
+.ouderpunten{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:28px}
+.ouderpunten div{background:var(--paper);border:1px solid var(--rule);border-radius:16px;padding:16px 18px}
+.ouderpunten h3{font-size:18px;margin-bottom:4px}
+.split .ouderpunten p{color:var(--muted);font-size:15px;line-height:1.5;margin:0}
+@media (max-width:620px){.ouderpunten{grid-template-columns:minmax(0,1fr)}}
+
+/* lange Nederlandse woorden (wedstrijdvormen, Voetbal.nl-kalender) passen ook op smalle telefoons */
+h1,h2,h3{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
+@media (max-width:380px){.prose h1{font-size:34px}.hero h1{font-size:40px}}
