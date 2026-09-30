@@ -14,9 +14,18 @@ AANMELDEN = APP + "/?account=nieuw"   # opent in de app meteen "Maak je account 
 CONTACT_MAIL = "info@opstellingapp.nl"
 OUT = pathlib.Path(__file__).parent
 
-NAV = [("/", "Home"), ("/wisselschema-maken/", "Wisselschema maken"),
-       ("/speeltijd-eerlijk-verdelen/", "Eerlijke speeltijd"), ("/knvb-wedstrijdvormen/", "KNVB-wedstrijdvormen"),
+TIPS = "/tips-en-tops-per-speler/"
+AGENDA = "/voetbal-nl-kalender-koppelen/"
+# Menu bovenaan (op kleine schermen verborgen) en de voettekst, die alle pagina's noemt
+NAV = [("/wisselschema-maken/", "Wisselschema maken"), ("/speeltijd-eerlijk-verdelen/", "Eerlijke speeltijd"),
+       (TIPS, "Tips en tops"), (AGENDA, "Wedstrijdagenda"),
        ("/prijzen/", "Prijzen"), ("/contact/", "Contact")]
+VOET = [("/", "Home"), ("/wisselschema-maken/", "Wisselschema maken"), ("/speeltijd-eerlijk-verdelen/", "Eerlijke speeltijd"),
+        (TIPS, "Tips en tops"), (AGENDA, "Wedstrijdagenda"), ("/knvb-wedstrijdvormen/", "KNVB-wedstrijdvormen"),
+        ("/prijzen/", "Prijzen"), ("/contact/", "Contact")]
+
+# Alle openbare pagina's met titel en beschrijving; daarmee worden de sitemap en llms.txt gemaakt
+PAGINA_INFO = []
 
 PUBLIEK = True         # False zolang de site nog niet openbaar mag zijn: geen zoekmachines
 PRIJS = "6,99"          # per team, per kwartaal (per kwartaal opzegbaar)
@@ -34,14 +43,21 @@ import hashlib
 CSS_VERSIE = hashlib.sha256((OUT / "style.css").read_bytes()).hexdigest()[:10]
 
 
-def page(path, title, description, body, extra_ld=None, keywords_hint="", index=True):
+def kruimelpad(naam):
+    """Zichtbaar kruimelpad bovenaan een pagina: Home › naam."""
+    return f'<nav class="kruimel" aria-label="Kruimelpad"><a href="/">Home</a> <span aria-hidden="true">›</span> <span aria-current="page">{naam}</span></nav>'
+
+
+def page(path, title, description, body, extra_ld=None, keywords_hint="", index=True, kruimel=None):
     url = SITE + path
     # Let op: geen backslash binnen een f-string, anders werkt dit niet op oudere Python-versies
     huidig = ' aria-current="page"'
     kopmenu = "".join(
         '<a href="{}"{}>{}</a>'.format(href, huidig if href == path else '', label)
-        for href, label in NAV if href != "/")
-    voetmenu = "".join('<a href="{}">{}</a>'.format(href, label) for href, label in NAV)
+        for href, label in NAV)
+    voetmenu = "".join('<a href="{}">{}</a>'.format(href, label) for href, label in VOET)
+    if index:
+        PAGINA_INFO.append((path, title, description))
     ld = {
         "@context": "https://schema.org",
         "@graph": [
@@ -53,6 +69,10 @@ def page(path, title, description, body, extra_ld=None, keywords_hint="", index=
              "isPartOf": {"@id": SITE + "/#website"}, "inLanguage": "nl-NL"},
         ],
     }
+    if kruimel:
+        ld["@graph"].append({"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": kruimel, "item": url}]})
     if extra_ld:
         ld["@graph"].extend(extra_ld)
     import json
@@ -154,6 +174,8 @@ GIDSEN = {
     "/wisselschema-maken/": ("Handleiding", "Een wisselschema maken", "In vijf stappen een schema dat langs de lijn ook echt werkt."),
     "/speeltijd-eerlijk-verdelen/": ("Achtergrond", "Speeltijd eerlijk verdelen", "Waarom het ertoe doet en hoe je het bijhoudt zonder rekenwerk."),
     "/knvb-wedstrijdvormen/": ("Overzicht", "KNVB-wedstrijdvormen", "Speelduur, aantal spelers en wisselmomenten van O7 tot en met O12 in één tabel."),
+    TIPS: ("Functie", "Tips en tops per speler", "Zie waar elk kind aan werkt, wat al gelukt is en waar het team op moet trainen."),
+    AGENDA: ("Handleiding", "Voetbal.nl-kalender koppelen", "Alle wedstrijden van het seizoen in één keer klaar, plus het plaatje voor de ouders."),
     "/prijzen/": ("Prijzen", "Wat Opstelling kost", f"De eerste {GRATIS} wedstrijden gratis, daarna {PRIJS} euro per kwartaal per team, per kwartaal opzegbaar."),
 }
 
@@ -170,6 +192,8 @@ def prijskaarten():
           <li>Alle functies, niets afgeschermd</li>
           <li>Zoveel medetrainers als je wilt</li>
           <li>KNVB-wedstrijdvormen O7 t/m O12</li>
+          <li>Voetbal.nl-agenda koppelen</li>
+          <li>Tips en tops per speler</li>
           <li>Live meekijken tijdens de wedstrijd</li>
           <li>Verslagen delen met ouders</li>
         </ul>
@@ -195,6 +219,12 @@ def telefoon(bestand, alt, laden="lazy"):
     return f'<div class="phone"><img src="/img/{bestand}" width="780" height="1560" alt="{alt}" loading="{laden}"{extra}></div>'
 
 
+def plaatje(laden="lazy"):
+    """Het plaatje dat trainers met de ouders delen (aanwezigheid, verzameltijd, wassen en fruit)."""
+    return (f'<div class="plaatje"><img src="/img/site-ouders-plaatje.webp" width="810" height="1158" '
+            f'alt="Plaatje voor de ouders: verzameltijd 09:30, aftrap 10:15, sportpark, wie er meegaat, wie de shirts wast en wie fruit meeneemt" loading="{laden}"></div>')
+
+
 ICOON = {
     "balk": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 18h16M6 18V9M12 18V6M18 18v-7"/></svg>',
     "vink": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg>',
@@ -207,15 +237,17 @@ ICOON = {
 home_faq = [
     ("Wat kost Opstelling?", f"De eerste {GRATIS} wedstrijden van een team zijn gratis, zodat je het rustig kunt uitproberen. Daarna kost het {PRIJS} euro per kwartaal voor dat team, per kwartaal opzegbaar. Medetrainers die je toevoegt betalen niets."),
     ("Moet ik iets installeren?", "Nee. Opstelling werkt in je browser en je kunt hem op je beginscherm zetten, zodat hij opent als een gewone app."),
+    ("Moet ik alle wedstrijden zelf invoeren?", "Nee. Koppel de teamkalender uit de Voetbal.nl-app en alle wedstrijden van het seizoen komen er vanzelf in, met aftrap, tegenstander en locatie. Zelf een wedstrijd toevoegen kan ook altijd."),
+    ("Kan ik ook bijhouden waar een speler aan moet werken?", "Ja. Bij elke speler leg je tips en tops vast. Je ziet wat al gelukt is en waar het team als geheel op kan trainen. Alleen trainers van het team zien dit."),
     ("Werkt het ook voor 6 tegen 6 en 8 tegen 8?", "Ja. Je kiest het niveau van O7 tot en met O12, en de app volgt de KNVB-wedstrijdvormen: aantal spelers, wel of geen keeper, speelduur en wisselmomenten."),
     ("Kunnen meerdere trainers hetzelfde team beheren?", "Ja, en dat kost niets extra. Je voegt trainers toe met hun e-mailadres. Iedereen ziet dezelfde wedstrijden en kan de opstelling klaarzetten of de wedstrijd bijhouden."),
     ("Houdt de app rekening met de posities van spelers?", "Als je dat aanzet wel. Je geeft per speler aan waar hij goed uit de voeten kan, en de app stelt spelers zoveel mogelijk zo op, zonder de eerlijke speeltijd los te laten."),
 ]
 stappen = [
-    ("Klaarzetten", "Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf. Met een druk op de knop heb je een eerlijke opstelling.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per kwart"),
+    ("Klaarzetten", "De wedstrijd staat al klaar uit je Voetbal.nl-agenda. Vink aan wie er is, kies de keepers en hoe je wilt wisselen: automatisch, op vaste momenten of helemaal zelf. Met een druk op de knop heb je een eerlijke opstelling.", "site-opstelling.webp", "De opstelling per kwart met de wisselspelers", "De opstelling per kwart"),
     ("Spelen", "Start de klok, noteer doelpunten en volg de wisselmomenten. Medetrainers kijken live mee en kunnen overnemen.", "site-wedstrijd.webp", "Het wedstrijdscherm met klok, stand en het volgende wisselmoment", "Tijdens de wedstrijd"),
     ("Delen", "Sluit af en deel het verslag met de ouders, met de uitslag, het verloop en wie er scoorde.", "verslag.webp", "Deelbaar wedstrijdverslag met uitslag en doelpuntenmakers", "Het verslag voor de ouders"),
-    ("Bijhouden", "Zie per speler de speeltijd en doelpunten over het hele seizoen. De volgende opstelling houdt daar rekening mee.", "site-seizoen.webp", "Het seizoen in cijfers met topscorers en speeltijd", "Automatisch seizoensoverzicht"),
+    ("Bijhouden en verbeteren", "Zie per speler de speeltijd en doelpunten over het hele seizoen, en leg tips en tops vast. De volgende opstelling houdt rekening met de speeltijd.", "site-seizoen.webp", "Het seizoen in cijfers met topscorers en speeltijd", "Automatisch seizoensoverzicht"),
 ]
 tab_knoppen = "".join(f'<input type="radio" name="stap" id="t{i}"{" checked" if i == 1 else ""}>' for i in range(1, 5))
 tab_labels = "".join(
@@ -244,8 +276,8 @@ page("/",
       </div>
       <ul class="checks">
         <li>Eerste {GRATIS} wedstrijden gratis, zonder betaalgegevens</li>
+        <li>Alle wedstrijden van het seizoen in één keer uit Voetbal.nl</li>
         <li>Werkt op elke telefoon, niets te installeren</li>
-        <li>Medetrainers kunnen gratis toegevoegd worden</li>
       </ul>
     </div>
     <div class="hero-beeld">
@@ -304,6 +336,50 @@ page("/",
   </div>
 </section>
 
+<section class="block band" id="seizoen">
+  <div class="wrap">
+    <div class="head">
+      <h2>Het hele seizoen in één app</h2>
+      <p>Niet alleen de zaterdag zelf. Opstelling zet je wedstrijden klaar en helpt je zien waar elk kind aan werkt.</p>
+    </div>
+
+    <div class="feat">
+      <div class="feat-tekst">
+        <span class="eyebrow"><b></b>Wedstrijdagenda</span>
+        <h3>Alle wedstrijden klaar, en ouders weten waar ze aan toe zijn</h3>
+        <p>Koppel de teamkalender uit de Voetbal.nl-app en alle wedstrijden van het seizoen staan erin: datum, aftrap, tegenstander, thuis of uit en de locatie. Daarna deel je elke week met één tik een plaatje met wie er meegaat, hoe laat iedereen er moet zijn, wie de shirts wast en wie fruit meeneemt.</p>
+        <ul class="vinkjes">
+          <li>Eén keer koppelen, het hele seizoen klaar</li>
+          <li>Verzameltijd rekent de app uit, voor thuis en uit</li>
+          <li>Wassen en fruit: de app onthoudt wie het de vorige keer deed</li>
+        </ul>
+        <a class="meer" href="{AGENDA}">Zo werkt de wedstrijdagenda <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="feat-beeld oranje metplaatje">
+        {telefoon("site-agenda-wedstrijden.webp", "De komende wedstrijden uit de Voetbal.nl-agenda in de app, met thuis of uit, aftrap en sportpark")}
+        {plaatje()}
+      </div>
+    </div>
+
+    <div class="feat om">
+      <div class="feat-tekst">
+        <span class="eyebrow"><b></b>Tips en tops</span>
+        <h3>Zie waar elk kind aan werkt</h3>
+        <p>Leg per speler vast wat goed gaat en waar hij of zij aan kan werken. Een tip die gelukt is, wordt met één tik een top. Zo zie je over het seizoen de vooruitgang, en waar het hele team op moet trainen.</p>
+        <ul class="vinkjes">
+          <li>Kies uit vaardigheden aan de bal en zonder bal, of typ een eigen tip</li>
+          <li>Waar trainen we op? De tips die het vaakst terugkomen</li>
+          <li>Alleen zichtbaar voor trainers, niet in het verslag voor ouders</li>
+        </ul>
+        <a class="meer" href="{TIPS}">Meer over tips en tops per speler <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="feat-beeld">
+        {telefoon("site-speler-tips-tops.webp", "Tips en tops bij een speler: tops, tips en wat al gelukt is")}
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="block pricing band" id="prijs">
   <div class="wrap">
     <div class="head">
@@ -323,7 +399,18 @@ page("/",
          "@type": "SoftwareApplication", "name": "Opstelling",
          "applicationCategory": "SportsApplication", "operatingSystem": "Web, iOS, Android",
          "url": APP, "inLanguage": "nl-NL",
-         "description": "App voor jeugdtrainers: opstellingen maken, speeltijd eerlijk verdelen en wedstrijdverslagen delen.",
+         "description": "App voor jeugdtrainers: opstellingen maken, speeltijd eerlijk verdelen, wedstrijden uit de Voetbal.nl-agenda inlezen, tips en tops per speler bijhouden en wedstrijdverslagen delen.",
+         "featureList": [
+             "Eerlijke opstelling en wisselschema per wedstrijd",
+             "Speeltijd eerlijk verdelen over het hele seizoen",
+             "KNVB-wedstrijdvormen O7 tot en met O12",
+             "Wedstrijdscherm met klok, stand en wisselmomenten",
+             "Wedstrijden inlezen uit de Voetbal.nl-teamkalender",
+             "Plaatje voor ouders met verzameltijd, locatie, wassen en fruit",
+             "Tips en tops per speler en voor het team",
+             "Wedstrijdverslag delen met ouders",
+             "Meerdere trainers per team, live meekijken",
+         ],
          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
      }] + faq_ld(home_faq))
 
@@ -356,12 +443,13 @@ page("/wisselschema-maken/",
 
   <h2>Je houdt zelf de regie</h2>
   <p>Je kunt spelers altijd ruilen, zelf de wisselmomenten kiezen (bijvoorbeeld alleen in de rust), of de opstelling helemaal zelf neerzetten en de app alleen de tijd laten bijhouden.</p>
+  <p>Heb je de teamkalender uit de Voetbal.nl-app, dan staan alle wedstrijden al klaar en begin je meteen bij het aanvinken. Zo <a href="{AGENDA}">koppel je je Voetbal.nl-kalender</a>.</p>
 </section>
 
 {faq_html(ws_faq)}
 {cta("Laat de app je wisselschema maken", f"Aanvinken wie er is, keepers kiezen en klaar. De eerste {GRATIS} wedstrijden zijn gratis.")}
 
-{gidsen("/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/", "/prijzen/")}
+{gidsen("/speeltijd-eerlijk-verdelen/", AGENDA, "/knvb-wedstrijdvormen/")}
 """, extra_ld=faq_ld(ws_faq))
 
 # --------------------------------------------- speeltijd eerlijk verdelen
@@ -393,12 +481,13 @@ page("/speeltijd-eerlijk-verdelen/",
 
   <h2>Eerlijk verdelen en toch coachen</h2>
   <p>Eerlijke speeltijd betekent niet dat alles vastligt. Bij de pupillen wegen spelen en plezier het zwaarst; hoe ouder de kinderen, hoe meer ruimte er is voor keuzes op basis van inzet en training. Je kunt in de app altijd zelf ingrijpen, en de app rekent gewoon verder.</p>
+  <p>Speeltijd is één kant. Wil je ook zien hoe elk kind zich ontwikkelt, dan leg je per speler <a href="{TIPS}">tips en tops</a> vast: wat gaat goed en waar werkt hij of zij aan.</p>
 </section>
 
 {faq_html(st_faq)}
 {cta("Laat de speeltijd zichzelf bijhouden", f"Opstelling verdeelt de minuten en onthoudt wie achterliep. De eerste {GRATIS} wedstrijden zijn gratis.")}
 
-{gidsen("/wisselschema-maken/", "/knvb-wedstrijdvormen/", "/prijzen/")}
+{gidsen("/wisselschema-maken/", TIPS, "/prijzen/")}
 """, extra_ld=faq_ld(st_faq))
 
 # ------------------------------------------------ knvb wedstrijdvormen
@@ -441,6 +530,131 @@ page("/knvb-wedstrijdvormen/",
 
 {gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/prijzen/")}
 """, extra_ld=faq_ld(knvb_faq))
+
+# ------------------------------------------------ tips en tops per speler
+VAARDIGHEDEN_BAL = ["Passen over de grond", "Passen door de lucht", "Schieten op doel", "Aannemen in stilstand",
+                    "Aannemen in beweging", "Dribbelen", "Drijven", "Passeren", "Positie kiezen"]
+VAARDIGHEDEN_ZONDER = ["Druk zetten lopend", "Druk zetten rennend", "Mandekken", "Sliding maken", "Duelleren",
+                       "Blokken", "Knijpen", "Rugdekking geven", "Positie kiezen"]
+tt_faq = [
+    ("Zien ouders de tips en tops?", "Nee. Alleen trainers van het team zien ze. Ze staan niet in het wedstrijdverslag dat je met ouders deelt."),
+    ("Kan ik een eigen tip toevoegen?", "Ja. Naast de vaste lijst met vaardigheden kun je altijd een eigen aantekening typen, zoals meer praten in het veld."),
+    ("Kunnen medetrainers ook tips en tops geven?", "Ja. Iedere trainer van het team kan ze toevoegen en ziet dezelfde lijst."),
+    ("Hoe zie ik of een speler vooruitgaat?", "Een tip die gelukt is, zet je met één tik om naar een top; hij blijft zichtbaar onder Gelukt. In het teamoverzicht kies je tussen de laatste zes weken en het hele seizoen."),
+    ("Wat kost het?", f"Tips en tops zitten gewoon in Opstelling. De eerste {GRATIS} wedstrijden van een team zijn gratis, daarna kost het {PRIJS} euro per kwartaal per team."),
+]
+lijst = lambda items: "".join(f"<li>{v}</li>" for v in items)
+page(TIPS,
+     "Tips en tops per speler: voortgang volgen in je jeugdteam",
+     "Leg per speler tips en tops vast, zie wat al gelukt is en waar je team op moet trainen. Een eenvoudig spelersvolgsysteem zonder cijfers.",
+     f"""
+<section class="prose">
+  {kruimelpad("Tips en tops")}
+  <h1>Tips en tops per speler</h1>
+  <p class="lead">Wat gaat goed, waar kan een kind nog aan werken en wat is inmiddels gelukt? Met Opstelling houd je dat per speler bij, in een paar tikken na de wedstrijd of de training. Zo zie je over het seizoen echt vooruitgang.</p>
+
+  <div class="duo">
+    <figure>{telefoon("site-speler-tips-tops.webp", "Tips en tops bij een speler: tops, tips en wat al gelukt is", "eager")}<figcaption>Tips en tops bij een speler</figcaption></figure>
+    <figure>{telefoon("site-team-tips-tops.webp", "Het teamoverzicht Waar trainen we op? met de vaardigheden die het vaakst een tip krijgen")}<figcaption>Waar trainen we op?</figcaption></figure>
+  </div>
+
+  <h2>Een spelersvolgsysteem zonder cijfers</h2>
+  <p>Een rapportcijfer zegt een kind van negen weinig. Een concrete tip wel: neem de bal aan in beweging, of geef rugdekking. En een top laat zien wat er al goed gaat. Daarom werkt Opstelling niet met scores, maar met tips en tops die je aan een vaardigheid koppelt. Dat is snel ingevuld en je ziet meteen of een tip na een paar weken een top is geworden.</p>
+
+  <h2>Zo werkt het</h2>
+  <ul>
+    <li><strong>Kies een vaardigheid</strong> uit de lijst (aan de bal of zonder bal), of typ een eigen aantekening.</li>
+    <li><strong>Geef je dezelfde tip nog eens,</strong> dan telt hij op. Zo zie je wat vaker terugkomt.</li>
+    <li><strong>Is een tip gelukt?</strong> Met één tik wordt hij een top, en hij blijft zichtbaar onder Gelukt.</li>
+    <li><strong>Oudere aantekeningen worden lichter</strong> na zes weken, zodat je ziet wat nu speelt.</li>
+    <li><strong>Tips voor het hele team</strong> leg je vast na een wedstrijd, in het scherm na afloop.</li>
+  </ul>
+
+  <h2>Waar moet het team op trainen?</h2>
+  <p>Bovenaan de spelerslijst staat <em>Waar trainen we op?</em>: de tips die het vaakst terugkomen, bij spelers en na wedstrijden, over de laatste zes weken. In het teamoverzicht zie je per vaardigheid hoeveel spelers er een tip of top voor hebben, en wie nog geen aantekening heeft. Zo vergeet je niemand, en weet je wat je de volgende training oefent.</p>
+
+  <h2>De vaardigheden in de app</h2>
+  <div class="kolommen">
+    <div><h3>Aan de bal</h3><ul>{lijst(VAARDIGHEDEN_BAL)}</ul></div>
+    <div><h3>Zonder bal</h3><ul>{lijst(VAARDIGHEDEN_ZONDER)}</ul></div>
+  </div>
+  <p>Past iets niet in de lijst, zoals meer praten met je medespelers, dan typ je het als eigen tip.</p>
+
+  <h2>Alleen zichtbaar voor trainers</h2>
+  <p>Tips en tops zijn alleen zichtbaar voor de trainers van het team. Ze staan niet in het wedstrijdverslag dat je met ouders deelt. Wil je het met een kind of ouder bespreken, dan heb je alles bij de hand.</p>
+</section>
+
+{faq_html(tt_faq)}
+{cta("Zie waar je team aan werkt", f"Tips en tops zitten gewoon in Opstelling. De eerste {GRATIS} wedstrijden zijn gratis.")}
+
+{gidsen("/speeltijd-eerlijk-verdelen/", AGENDA, "/knvb-wedstrijdvormen/")}
+""", extra_ld=faq_ld(tt_faq), kruimel="Tips en tops")
+
+# ------------------------------------------------ voetbal.nl-kalender koppelen
+ag_faq = [
+    ("Wat kost de Voetbal.nl-teamkalender?", "Voetbal.nl vraagt € 1,99 voor de teamkalender. Koppelen in Opstelling kost niets extra."),
+    ("Werkt het ook zonder de teamkalender?", "Ja. Dan voeg je de wedstrijden zelf toe en kies je thuis of uit. Alles werkt verder hetzelfde."),
+    ("Wat gebeurt er als de bond een wedstrijd verplaatst?", "De app haalt de wijziging op en past datum, aftrap of locatie aan. Wat je al had klaargezet, zoals aanwezigen en opstelling, blijft staan."),
+    ("Kan ik bijhouden wie de shirts wast en wie fruit meeneemt?", "Ja. Bij het plaatje voor de ouders kies je wie er deze week wast en wie fruit meeneemt. De app laat zien wie het de vorige keer deed, zodat je makkelijk rouleert."),
+    ("Hoe bepaalt de app de verzameltijd?", "Je stelt één keer in hoeveel eerder iedereen er moet zijn, apart voor thuis en uit. De app rekent het daarna per wedstrijd uit vanaf de aftrap."),
+    ("Kunnen medetrainers de agenda ook zien?", "Ja. De wedstrijden horen bij het team, dus iedere trainer ziet dezelfde agenda. Eén keer koppelen is genoeg."),
+]
+page(AGENDA,
+     "Voetbal.nl-kalender koppelen: hele seizoen in één keer klaar",
+     "Alle wedstrijden uit de Voetbal.nl-app in één keer klaar, en met één tik laat je ouders weten hoe laat ze er zijn, wie wast en wie fruit meeneemt.",
+     f"""
+<section class="prose">
+  {kruimelpad("Wedstrijdagenda")}
+  <h1>Je Voetbal.nl-kalender koppelen</h1>
+  <p class="lead">Zet alle wedstrijden van het seizoen in één keer klaar in Opstelling, met aftrap, tegenstander, thuis of uit en de locatie. En laat ouders elke week met één tik weten wie er meegaat, hoe laat ze er moeten zijn, wie de shirts wast en wie fruit meeneemt.</p>
+
+  <h2>In drie stappen gekoppeld</h2>
+  <ol class="stappen">
+    <li><b>Koop de teamkalender in de Voetbal.nl-app</b><span>Ga naar je team, dan Programma › Kalender. De teamkalender kost € 1,99 bij Voetbal.nl. Je krijgt een mail met een link.</span></li>
+    <li><b>Kopieer de link uit de mail</b><span>Het is een adres dat met webcal:// of https:// begint.</span></li>
+    <li><b>Plak hem in Opstelling bij Agenda koppelen</b><span>Op het tabblad Wedstrijd of Team. Alle wedstrijden van het seizoen staan er meteen in.</span></li>
+  </ol>
+
+  <div class="duo">
+    <figure>{telefoon("site-agenda-wedstrijden.webp", "De komende wedstrijden uit de Voetbal.nl-agenda in de app, met thuis of uit, aftrap en sportpark")}<figcaption>De wedstrijden uit de agenda</figcaption></figure>
+  </div>
+
+  <h2>Wat er dan klaarstaat</h2>
+  <p>Per wedstrijd de datum en aftrap, de tegenstander, of je thuis of uit speelt en waar. Je opent de wedstrijd, vinkt aan wie er is en maakt de opstelling. Zelf een wedstrijd toevoegen, zoals een oefenwedstrijd of toernooi, kan altijd.</p>
+
+  <h2>Verplaatst of afgelast?</h2>
+  <ul>
+    <li><strong>De app werkt de agenda vanzelf bij</strong> als je het tabblad Wedstrijd opent, of met Nu bijwerken.</li>
+    <li><strong>Aanwezigen en opstelling blijven staan,</strong> ook als de aftrap of het veld verandert.</li>
+    <li><strong>Verdwijnt een wedstrijd uit de agenda,</strong> dan krijgt hij een label en kies je zelf: afgelasten of verwijderen.</li>
+    <li><strong>Had je hem al zelf aangemaakt?</strong> Dan vraagt de app of het dezelfde wedstrijd is en voegt ze samen.</li>
+  </ul>
+
+  <p class="opm">Opstelling is niet verbonden aan Voetbal.nl of de KNVB. De teamkalender koop je in de Voetbal.nl-app; de prijs bepaalt Voetbal.nl.</p>
+</section>
+
+<section class="block band ouderblok" id="ouders">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow"><b></b>Delen met ouders</span>
+      <h2>Verzameltijd, wassen en fruit in één plaatje</h2>
+      <p>Geen appje meer typen met namen, tijden en een adres. Onder <em>Wie is er?</em> maak je met één tik een plaatje voor de groepsapp, met alles wat ouders voor zaterdag moeten weten.</p>
+      <div class="ouderpunten">
+        <div><h3>Wie gaat er mee</h3><p>Wie er is en wie is afgemeld, rechtstreeks uit je aanwezigheid.</p></div>
+        <div><h3>Hoe laat verzamelen</h3><p>De app rekent het uit de aftrap, met een eigen tijd voor thuis en uit.</p></div>
+        <div><h3>Waar er gespeeld wordt</h3><p>Het sportpark en adres komen mee uit de Voetbal.nl-agenda.</p></div>
+        <div><h3>Wie wast en wie neemt fruit mee</h3><p>Kies met een tik. De app laat zien wie het de vorige keer deed, zodat het eerlijk rondgaat.</p></div>
+      </div>
+    </div>
+    <div class="report">{plaatje()}</div>
+  </div>
+</section>
+
+{faq_html(ag_faq)}
+{cta("Zet je seizoen in één keer klaar", f"Koppel je Voetbal.nl-kalender, deel de verzameltijd met de ouders en maak zaterdag de eerste opstelling. De eerste {GRATIS} wedstrijden zijn gratis.")}
+
+{gidsen("/wisselschema-maken/", TIPS, "/prijzen/")}
+""", extra_ld=faq_ld(ag_faq), kruimel="Wedstrijdagenda")
 
 # ------------------------------------------------------------- prijzen
 pr_faq = [
@@ -524,7 +738,7 @@ page("/bedankt/",
 """, index=False)
 
 # ------------------------------------------------------ sitemap, robots
-paths = ["/", "/prijzen/", "/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/", "/contact/"]
+paths = [p for p, _, _ in PAGINA_INFO]
 def prioriteit(p):
     if p == "/":
         return "1.0"
@@ -543,5 +757,34 @@ if PUBLIEK:
 else:
     # nog niet openbaar: alle zoekmachines weren
     (OUT / "robots.txt").write_text("# Site is nog in aanbouw\nUser-agent: *\nDisallow: /\n", encoding="utf-8")
+
+# ------------------------------------------------------------- llms.txt
+# Een korte samenvatting in platte tekst voor AI-assistenten (ChatGPT, Claude,
+# Perplexity en dergelijke), volgens het voorstel op llmstxt.org. Wordt uit
+# dezelfde titels en beschrijvingen gemaakt als de pagina's, dus loopt nooit achter.
+llms = f"""# Opstelling
+
+> Opstelling is een Nederlandse webapp voor trainers van jeugdvoetbalteams (O7 tot en met O12). De app maakt opstellingen en wisselschema's, verdeelt de speeltijd eerlijk over het hele seizoen, leest wedstrijden in uit de Voetbal.nl-teamkalender, houdt tips en tops per speler bij en maakt deelbare verslagen voor ouders.
+
+Kernfeiten:
+
+- Voor wie: jeugdtrainers in Nederland, teams van O7 tot en met O12, volgens de KNVB-wedstrijdvormen (4 tegen 4, 6 tegen 6, 8 tegen 8).
+- Prijs: de eerste {GRATIS} wedstrijden per team zijn gratis, daarna {PRIJS} euro per kwartaal per team, per kwartaal opzegbaar. Medetrainers betalen niets.
+- Werkt in de browser op elke telefoon; niets te installeren. App: {APP}
+- Eerlijke speeltijd: de app verdeelt de minuten binnen een wedstrijd en geeft wie eerder minder speelde voorrang bij de volgende wedstrijd.
+- Wedstrijdagenda: koppel de teamkalender uit de Voetbal.nl-app (kost 1,99 euro bij Voetbal.nl) en alle wedstrijden staan klaar, met aftrap, tegenstander, thuis of uit en locatie. Wijzigingen worden automatisch bijgewerkt.
+- Delen met ouders: een plaatje met wie er meegaat, verzameltijd, locatie, wie de shirts wast en wie fruit meeneemt.
+- Tips en tops: per speler vastleggen wat goed gaat en waar hij of zij aan werkt, gekoppeld aan vaardigheden aan de bal en zonder bal; alleen zichtbaar voor trainers.
+- Opstelling is niet verbonden aan de KNVB of Voetbal.nl.
+
+## Pagina's
+
+""" + "".join(f"- [{t}]({SITE}{p}): {d}\n" for p, t, d in PAGINA_INFO) + f"""
+## Contact
+
+- E-mail: {CONTACT_MAIL}
+"""
+(OUT / "llms.txt").write_text(llms, encoding="utf-8")
+
 print("Site gebouwd:", ", ".join(paths))
 print("Zoekmachines:", "toegestaan" if PUBLIEK else "geweerd (PUBLIEK staat op False in build.py)")

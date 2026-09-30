@@ -4,7 +4,8 @@ import { test, expect } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
-const PAGINAS = ['/', '/prijzen/', '/wisselschema-maken/', '/speeltijd-eerlijk-verdelen/', '/knvb-wedstrijdvormen/', '/contact/'];
+const PAGINAS = ['/', '/prijzen/', '/wisselschema-maken/', '/speeltijd-eerlijk-verdelen/', '/knvb-wedstrijdvormen/', '/tips-en-tops-per-speler/', '/voetbal-nl-kalender-koppelen/', '/contact/'];
+const TIPS = '/tips-en-tops-per-speler/', AGENDA = '/voetbal-nl-kalender-koppelen/';
 const SITE = fs.readFileSync(path.join(process.cwd(), 'build.py'), 'utf8').match(/^SITE = "([^"]+)"/m)[1];   // het adres uit build.py
 const titels = new Set(), beschrijvingen = new Set();
 const BEACON = 'https://static.cloudflareinsights.com/beacon.min.js';
@@ -139,18 +140,22 @@ test.describe('zonder JavaScript', () => {
 });
 
 test('schermafbeeldingen in het telefoonframe worden niet afgesneden of vervormd', async ({ page }) => {
-  await page.goto('/');
-  const maten = await page.$$eval('.phone img, .report img, .kaartbeeld img', imgs => imgs.map(i => {
+  for (const p of ['/', TIPS, AGENDA]) {
+  await page.goto(p);
+  for (const img of await page.locator('img[loading=lazy]').all()) await img.scrollIntoViewIfNeeded();
+  await page.waitForLoadState('networkidle');
+  const maten = await page.$$eval('.phone img, .report img, .kaartbeeld img, .plaatje img', imgs => imgs.map(i => {
     const cs = getComputedStyle(i);
     const w = i.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const h = i.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     return { src: i.getAttribute('src'), zichtbaar: h / w, echt: i.height && i.width ? Number(i.getAttribute('height')) / Number(i.getAttribute('width')) : 0, fit: cs.objectFit, w };
   }));
-  expect(maten.length).toBeGreaterThan(3);
+  expect(maten.length).toBeGreaterThan(1);
   for (const m of maten) {
     if (!m.w) continue;   // verborgen stap
     expect(m.fit, `${m.src} wordt bijgesneden`).not.toBe('cover');
     expect(Math.abs(m.zichtbaar - m.echt), `${m.src} is vervormd`).toBeLessThan(0.02);
+  }
   }
 });
 
@@ -202,5 +207,93 @@ test('stijlbestand heeft een versienummer dat bij de inhoud past', async ({ page
   for (const p of PAGINAS) {
     await page.goto(p);
     expect(await page.getAttribute('link[rel=stylesheet]', 'href'), `stijl op ${p}`).toBe(`/style.css?v=${verwacht}`);
+  }
+});
+
+// ---------- tips en tops en de wedstrijdagenda (sept 2026) ----------
+
+test('menu: tips en tops en wedstrijdagenda bovenaan, KNVB-wedstrijdvormen alleen in de voettekst', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  const kop = await page.$$eval('header.site nav a', as => as.map(a => a.getAttribute('href')));
+  expect(kop).toEqual(['/wisselschema-maken/', '/speeltijd-eerlijk-verdelen/', TIPS, AGENDA, '/prijzen/', '/contact/']);
+  const voet = await page.$$eval('footer.site nav a', as => as.map(a => a.getAttribute('href')));
+  for (const p of [TIPS, AGENDA, '/knvb-wedstrijdvormen/']) expect(voet, `voettekst mist ${p}`).toContain(p);
+  await page.goto(TIPS);
+  await expect(page.locator(`header.site nav a[href="${TIPS}"]`)).toHaveAttribute('aria-current', 'page');
+});
+
+test('homepagina: blok over het hele seizoen met echte schermen en links naar beide pagina\'s', async ({ page }) => {
+  await page.goto('/');
+  const blok = page.locator('#seizoen');
+  await expect(blok.locator('h2').first()).toHaveText('Het hele seizoen in één app');
+  await expect(blok.locator(`a[href="${AGENDA}"]`)).toHaveCount(1);
+  await expect(blok.locator(`a[href="${TIPS}"]`)).toHaveCount(1);
+  const beelden = await blok.locator('img').evaluateAll(i => i.map(x => x.getAttribute('src')));
+  expect(beelden).toEqual(['/img/site-agenda-wedstrijden.webp', '/img/site-ouders-plaatje.webp', '/img/site-speler-tips-tops.webp']);
+  await expect(blok).toContainText('wie de shirts wast');
+  await expect(page.locator('label[for=t4] b')).toHaveText('Bijhouden en verbeteren');
+  await expect(page.locator('.checks')).toContainText('Voetbal.nl');
+  await expect(page.locator('.incl')).toContainText('Tips en tops per speler');
+});
+
+test('nieuwe pagina\'s: kruimelpad, veelgestelde vragen en functies in de gegevens voor zoekmachines', async ({ page }) => {
+  for (const [p, naam] of [[TIPS, 'Tips en tops'], [AGENDA, 'Wedstrijdagenda']]) {
+    await page.goto(p);
+    await expect(page.locator('nav.kruimel a[href="/"]')).toHaveCount(1);
+    await expect(page.locator('nav.kruimel')).toContainText(naam);
+    const graph = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent())['@graph'];
+    const kruimel = graph.find(x => x['@type'] === 'BreadcrumbList');
+    expect(kruimel.itemListElement.map(x => x.name)).toEqual(['Home', naam]);
+    expect(kruimel.itemListElement[1].item).toBe(SITE + p);
+    const faq = graph.find(x => x['@type'] === 'FAQPage');
+    expect(faq.mainEntity.length).toBeGreaterThanOrEqual(4);
+    // wat op de pagina staat, staat ook in de gegevens (en andersom)
+    await expect(page.locator('.faq summary')).toHaveText(faq.mainEntity.map(q => q.name));
+  }
+  await page.goto('/');
+  const app = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent())['@graph'].find(x => x['@type'] === 'SoftwareApplication');
+  expect(app.featureList.join(' ')).toContain('Tips en tops');
+  expect(app.featureList.join(' ')).toContain('Voetbal.nl');
+});
+
+test('agendapagina: drie stappen en een eigen blok over het plaatje voor de ouders', async ({ page }) => {
+  await page.goto(AGENDA);
+  await expect(page.locator('ol.stappen li')).toHaveCount(3);
+  const blok = page.locator('.ouderblok');
+  await expect(blok.locator('h2')).toHaveText('Verzameltijd, wassen en fruit in één plaatje');
+  await expect(blok.locator('.ouderpunten > div')).toHaveCount(4);
+  await expect(blok.locator('img[src="/img/site-ouders-plaatje.webp"]')).toHaveCount(1);
+  await expect(page.locator('main')).toContainText('niet verbonden aan Voetbal.nl');
+});
+
+test('tips-en-topspagina: alle vaardigheden uit de app staan als tekst op de pagina', async ({ page }) => {
+  await page.goto(TIPS);
+  const tekst = await page.locator('.kolommen').innerText();
+  for (const v of ['Passen over de grond', 'Aannemen in beweging', 'Drijven', 'Knijpen', 'Rugdekking geven', 'Druk zetten rennend']) expect(tekst).toContain(v);
+  await expect(page.locator('main')).toContainText('Alleen zichtbaar voor trainers');
+});
+
+test('llms.txt vat de site samen voor AI-assistenten', async ({ page }) => {
+  const r = await page.request.get('/llms.txt');
+  expect(r.status()).toBe(200);
+  const t = await r.text();
+  expect(t.startsWith('# Opstelling\n')).toBe(true);
+  expect(t).toMatch(/^> .+/m);
+  for (const p of PAGINAS) expect(t, `llms.txt mist ${p}`).toContain(`(${SITE}${p})`);
+  expect(t).toContain('6,99');
+  expect(t).toContain('Voetbal.nl');
+  const rb = await (await page.request.get('/robots.txt')).text();
+  if (OPENBAAR) expect(rb).not.toMatch(/Disallow: \/\s/);
+});
+
+test('geen horizontaal scrollen op telefoon, tablet en laptop', async ({ page }) => {
+  for (const breedte of [320, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width: breedte, height: 900 });
+    for (const p of PAGINAS) {
+      await page.goto(p);
+      const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+      expect(sw, `${p} is breder dan het scherm op ${breedte}px`).toBeLessThanOrEqual(cw);
+    }
   }
 });
