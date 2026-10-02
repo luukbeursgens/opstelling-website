@@ -184,7 +184,7 @@ test('contactformulier gaat via Netlify naar een bedankpagina', async ({ page })
   expect(sm).not.toContain('/bedankt/');
 });
 
-test('knoppen naar de app openen account aanmaken; geen privacypagina, geen O13, opzegbaar per kwartaal', async ({ page }) => {
+test('knoppen naar de app openen account aanmaken; geen privacypagina, geen O13, prijs per seizoen', async ({ page }) => {
   for (const p of PAGINAS) {
     await page.goto(p);
     const knoppen = await page.$$eval(`a[href^="${APP}"]`, as => as.map(a => a.getAttribute('href')));
@@ -197,7 +197,8 @@ test('knoppen naar de app openen account aanmaken; geen privacypagina, geen O13,
   expect(fs.existsSync(path.join(process.cwd(), 'privacy'))).toBe(false);
   for (const p of ['/', '/prijzen/']) {
     await page.goto(p);
-    await expect(page.locator('.plan.featured')).toContainText('Per kwartaal opzegbaar');
+    await expect(page.locator('.plan.featured')).toContainText('€ 29,99');
+    await expect(page.locator('.plan.featured')).toContainText('per seizoen');
   }
 });
 
@@ -281,7 +282,7 @@ test('llms.txt vat de site samen voor AI-assistenten', async ({ page }) => {
   expect(t.startsWith('# Opstelling\n')).toBe(true);
   expect(t).toMatch(/^> .+/m);
   for (const p of PAGINAS) expect(t, `llms.txt mist ${p}`).toContain(`(${SITE}${p})`);
-  expect(t).toContain('6,99');
+  expect(t).toContain('29,99 euro per team per seizoen');
   expect(t).toContain('Voetbal.nl');
   const rb = await (await page.request.get('/robots.txt')).text();
   if (OPENBAAR) expect(rb).not.toMatch(/Disallow: \/\s/);
@@ -296,4 +297,36 @@ test('geen horizontaal scrollen op telefoon, tablet en laptop', async ({ page })
       expect(sw, `${p} is breder dan het scherm op ${breedte}px`).toBeLessThanOrEqual(cw);
     }
   }
+});
+
+// ---------- prijs: 29,99 euro per team per seizoen (okt 2026) ----------
+
+test('prijs is overal 29,99 euro per team per seizoen, ook in de gegevens voor Google en AI', async ({ page }) => {
+  const oud = /kwartaal|opzegbaar|(^|[^0-9])6,99/i;
+  for (const p of PAGINAS) {
+    await page.goto(p);
+    expect(await page.locator('body').innerText(), `oude prijs op ${p}`).not.toMatch(oud);
+    expect(await page.title(), `oude prijs in titel van ${p}`).not.toMatch(oud);
+    for (const sel of ['meta[name=description]', 'meta[property="og:description"]', 'meta[property="og:title"]']) {
+      expect(await page.getAttribute(sel, 'content'), `oude prijs in ${sel} op ${p}`).not.toMatch(oud);
+    }
+    for (const ld of await page.locator('script[type="application/ld+json"]').allTextContents()) {
+      expect(ld, `oude prijs in de gestructureerde gegevens van ${p}`).not.toMatch(oud);
+    }
+  }
+  for (const p of ['/', '/prijzen/']) {
+    await page.goto(p);
+    const graph = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent())['@graph'];
+    const app = graph.find(x => x['@type'] === 'SoftwareApplication');
+    expect(app, `app-gegevens op ${p}`).toBeTruthy();
+    const prijzen = app.offers.map(o => [o.price, o.priceCurrency]);
+    expect(prijzen).toEqual([['0', 'EUR'], ['29.99', 'EUR']]);
+    expect(app.offers[1].description).toContain('seizoen');
+  }
+  await page.goto('/prijzen/');
+  expect(await page.title()).toContain('29,99');
+  expect(await page.getAttribute('meta[name=description]', 'content')).toContain('per seizoen');
+  const llms = await (await page.request.get('/llms.txt')).text();
+  expect(llms).not.toMatch(oud);
+  expect(llms).toContain('vooraf');
 });

@@ -5,7 +5,7 @@
 Kernfeiten:
 
 - Voor wie: jeugdtrainers in Nederland, teams van O7 tot en met O12, volgens de KNVB-wedstrijdvormen (4 tegen 4, 6 tegen 6, 8 tegen 8).
-- Prijs: de eerste 3 wedstrijden per team zijn gratis, daarna 6,99 euro per kwartaal per team, per kwartaal opzegbaar. Medetrainers betalen niets.
+- Prijs: de eerste 3 wedstrijden per team zijn gratis, daarna 29,99 euro per team per seizoen, één keer vooraf betaald. Medetrainers betalen niets.
 - Werkt in de browser op elke telefoon; niets te installeren. App: https://app.opstellingapp.nl
 - Eerlijke speeltijd: de app verdeelt de minuten binnen een wedstrijd en geeft wie eerder minder speelde voorrang bij de volgende wedstrijd.
 - Wedstrijdagenda: koppel de teamkalender uit de Voetbal.nl-app (kost 1,99 euro bij Voetbal.nl) en alle wedstrijden staan klaar, met aftrap, tegenstander, thuis of uit en locatie. Wijzigingen worden automatisch bijgewerkt.
@@ -21,7 +21,7 @@ Kernfeiten:
 - [KNVB-wedstrijdvormen O7 t/m O12: speelduur, spelers en wisselen](https://opstellingapp.nl/knvb-wedstrijdvormen/): Overzicht van de KNVB-wedstrijdvormen per leeftijd: aantal spelers, wel of geen keeper, speelduur en handige wisselmomenten, van O7 tot en met O12.
 - [Tips en tops per speler: voortgang volgen in je jeugdteam](https://opstellingapp.nl/tips-en-tops-per-speler/): Leg per speler tips en tops vast, zie wat al gelukt is en waar je team op moet trainen. Een eenvoudig spelersvolgsysteem zonder cijfers.
 - [Voetbal.nl-kalender koppelen: hele seizoen in één keer klaar](https://opstellingapp.nl/voetbal-nl-kalender-koppelen/): Alle wedstrijden uit de Voetbal.nl-app in één keer klaar, en met één tik laat je ouders weten hoe laat ze er zijn, wie wast en wie fruit meeneemt.
-- [Prijzen: 6,99 euro per kwartaal per team, opzegbaar](https://opstellingapp.nl/prijzen/): Opstelling kost 6,99 euro per kwartaal per team en is per kwartaal opzegbaar. De eerste 3 wedstrijden zijn gratis. Medetrainers gebruiken de app kosteloos.
+- [Prijzen: 29,99 euro per team per seizoen, eerst gratis](https://opstellingapp.nl/prijzen/): Opstelling kost 29,99 euro per team per seizoen, één keer vooraf betaald. De eerste 3 wedstrijden zijn gratis. Medetrainers gebruiken de app kosteloos.
 - [Contact: vraag, idee of hulp bij Opstelling](https://opstellingapp.nl/contact/): Een vraag over Opstelling, een idee of loopt er iets niet goed? Stuur een bericht via het formulier of mail naar info@opstellingapp.nl. Je krijgt antwoord per mail.
 
 ## Contact
