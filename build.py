@@ -376,7 +376,7 @@ page("/",
       <div class="feat-tekst">
         <span class="eyebrow"><b></b>Wedstrijdagenda</span>
         <h3>Alle wedstrijden klaar, en ouders weten waar ze aan toe zijn</h3>
-        <p>Koppel de teamkalender uit de Voetbal.nl-app en alle wedstrijden van het seizoen staan erin: datum, aftrap, tegenstander, thuis of uit en de locatie. Daarna deel je elke week met één tik een plaatje met wie er meegaat, hoe laat iedereen er moet zijn, wie de shirts wast en wie fruit meeneemt.</p>
+        <p>Koppel de teamkalender uit de Voetbal.nl-app en alle wedstrijden van het seizoen staan erin: datum, aftrap, tegenstander, thuis of uit en de locatie. Daarna maak je elke week eenvoudig een plaatje voor de ouders met wie er meegaat, hoe laat iedereen er moet zijn, wie de shirts wast en wie fruit meeneemt.</p>
         <ul class="vinkjes">
           <li>Eén keer koppelen, het hele seizoen klaar</li>
           <li>Verzameltijd rekent de app uit, voor thuis en uit</li>
@@ -613,12 +613,12 @@ ag_faq = [
 ]
 page(AGENDA,
      "Voetbal.nl-kalender koppelen: hele seizoen in één keer klaar",
-     "Alle wedstrijden uit de Voetbal.nl-app in één keer klaar, en met één tik laat je ouders weten hoe laat ze er zijn, wie wast en wie fruit meeneemt.",
+     "Zo koppel je de Voetbal.nl-kalender in 3 stappen. Alle wedstrijden van je team staan meteen klaar, en je maakt eenvoudig een overzicht voor de ouders.",
      f"""
 <section class="prose">
   {kruimelpad("Wedstrijdagenda")}
   <h1>Je Voetbal.nl-kalender koppelen</h1>
-  <p class="lead">Zet alle wedstrijden van het seizoen in één keer klaar in Opstelling, met aftrap, tegenstander, thuis of uit en de locatie. En laat ouders elke week met één tik weten wie er meegaat, hoe laat ze er moeten zijn, wie de shirts wast en wie fruit meeneemt.</p>
+  <p class="lead">Zet alle wedstrijden van het seizoen in één keer klaar in Opstelling, met aftrap, tegenstander, thuis of uit en de locatie. Daarna maak je elke week eenvoudig een plaatje voor de ouders: wie er meegaat, hoe laat ze er moeten zijn, wie de shirts wast en wie fruit meeneemt.</p>
 
   <h2>In drie stappen gekoppeld</h2>
   <ol class="stappen">
@@ -650,7 +650,7 @@ page(AGENDA,
     <div>
       <span class="eyebrow"><b></b>Delen met ouders</span>
       <h2>Verzameltijd, wassen en fruit in één plaatje</h2>
-      <p>Geen appje meer typen met namen, tijden en een adres. Onder <em>Wie is er?</em> maak je met één tik een plaatje voor de groepsapp, met alles wat ouders voor zaterdag moeten weten.</p>
+      <p>Geen appje meer typen met namen, tijden en een adres. Onder <em>Wie is er?</em> maak je eenvoudig een plaatje voor de groepsapp, met alles wat ouders voor zaterdag moeten weten.</p>
       <div class="ouderpunten">
         <div><h3>Wie gaat er mee</h3><p>Wie er is en wie is afgemeld, rechtstreeks uit je aanwezigheid.</p></div>
         <div><h3>Hoe laat verzamelen</h3><p>De app rekent het uit de aftrap, met een eigen tijd voor thuis en uit.</p></div>

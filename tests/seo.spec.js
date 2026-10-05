@@ -330,3 +330,17 @@ test('prijs is overal 29,99 euro per team per seizoen, ook in de gegevens voor G
   expect(llms).not.toMatch(oud);
   expect(llms).toContain('vooraf');
 });
+
+test('agendapagina: beschrijving sluit aan op de zoekvraag en belooft geen "één tik" voor het ouderplaatje', async ({ page }) => {
+  await page.goto(AGENDA);
+  const desc = await page.getAttribute('meta[name=description]', 'content');
+  expect(desc).toContain('Voetbal.nl-kalender');
+  expect(desc).toContain('3 stappen');
+  expect(desc).not.toContain('één tik');
+  expect(await page.locator('main').textContent()).not.toContain('één tik');
+  // ook op de homepagina geen "één tik" bij het plaatje voor de ouders
+  await page.goto('/');
+  const seizoen = await page.locator('main').textContent();
+  expect(seizoen).not.toMatch(/één tik een plaatje/);
+  expect(seizoen).not.toMatch(/met één tik weten wie er meegaat/);
+});
