@@ -16,6 +16,12 @@ Statische marketingsite: geen eigen JavaScript, zeven pagina's, klaar voor Googl
 
 Het menu bovenaan en de voettekst staan als `NAV` en `VOET` bovenin `build.py`. De sitemap en `llms.txt` worden gemaakt uit de pagina's zelf, dus een nieuwe pagina komt daar vanzelf in.
 
+## Deelkaart
+
+De afbeelding die WhatsApp, LinkedIn en iMessage tonen bij een gedeelde link is `img/og.png`. De bron staat in `tests/deelkaart.html`. Pas daar de tekst aan en draai `npm run deelkaart`, daarna `python3 build.py`. Het adres van de afbeelding krijgt dan vanzelf een nieuw versienummer.
+
+Het aantal gratis wedstrijden staat als `GRATIS` bovenin `build.py`; de zinnen op de site passen zich aan (enkelvoud of meervoud). Op de deelkaart pas je het zelf aan in `tests/deelkaart.html`.
+
 ## Voor AI-assistenten
 
 `llms.txt` is een korte samenvatting van de site in platte tekst (kernfeiten, prijs en alle pagina's), bedoeld voor ChatGPT, Claude, Perplexity en dergelijke. De functiepagina's hebben daarnaast een kruimelpad en veelgestelde vragen in de gestructureerde gegevens, en de homepagina een lijst met functies van de app.

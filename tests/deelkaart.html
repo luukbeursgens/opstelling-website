@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- Bron van de deelkaart (img/og.png), de afbeelding die WhatsApp, LinkedIn en
+     iMessage tonen als iemand een link naar de site deelt. Aanpassen? Wijzig deze
+     tekst en draai: npm run deelkaart -->
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:"Bricolage Grotesque";src:url("../fonts/bricolage-grotesque.woff2") format("woff2");font-weight:500 800}
+@font-face{font-family:"Figtree";src:url("../fonts/figtree.woff2") format("woff2");font-weight:300 900}
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{position:relative;background:#F6F8F4;color:#132019;font-family:Figtree,sans-serif}
+.gloed{position:absolute;inset:0;background:
+  radial-gradient(closest-side,#BDE6CB,transparent 72%) 88% 30%/62% 95% no-repeat,
+  radial-gradient(closest-side,#FFD9B8,transparent 72%) 62% 115%/48% 70% no-repeat}
+.veld{position:absolute;right:120px;top:50%;width:620px;height:620px;transform:translateY(-50%);border:2px solid rgba(47,122,75,.14);border-radius:50%}
+.veld::after{content:"";position:absolute;left:50%;top:-30%;bottom:-30%;border-left:2px solid rgba(47,122,75,.14)}
+.tekst{position:absolute;left:72px;top:64px;width:650px}
+.logo{display:flex;align-items:center;gap:14px;font-family:"Bricolage Grotesque";font-weight:800;font-size:34px;letter-spacing:-.03em}
+.logo img{width:48px;height:48px;border-radius:12px}
+h1{font-family:"Bricolage Grotesque";font-weight:800;font-size:78px;line-height:1.02;letter-spacing:-.04em;margin-top:44px}
+h1 em{font-style:normal;color:#2F7A4B}
+.sub{font-size:27px;line-height:1.4;color:#56655C;margin-top:22px;max-width:560px}
+.onder{position:absolute;left:72px;bottom:58px;display:flex;align-items:center;gap:22px}
+.gratis{background:#2F7A4B;color:#fff;font-weight:800;font-size:26px;padding:14px 26px;border-radius:14px}
+.adres{font-family:"Bricolage Grotesque";font-weight:800;font-size:30px;color:#E8731A;letter-spacing:-.02em}
+.telefoon{position:absolute;right:96px;top:58px;width:330px;border-radius:50px;background:#16181A;padding:12px;transform:rotate(3deg);box-shadow:0 40px 80px -30px rgba(10,30,20,.45),inset 0 0 0 2px #3A3D40}
+.telefoon::before{content:"";position:absolute;top:21px;left:50%;transform:translateX(-50%);width:30%;height:22px;background:#16181A;border-radius:999px;z-index:2}
+.telefoon img{display:block;width:100%;padding:40px 0 0;background:#EEF1EA;border-radius:40px 40px 0 0}
+</style>
+</head>
+<body>
+<div class="gloed"></div>
+<div class="veld"></div>
+<div class="tekst">
+  <div class="logo"><img src="../img/icon.png" alt="">Opstelling</div>
+  <h1>Eerlijke speeltijd voor <em>elk kind</em></h1>
+  <p class="sub">Opstellingen, wisselschema's en speeltijd voor jeugdteams van O7 tot en met O12.</p>
+</div>
+<div class="onder"><span class="gratis">Eerste wedstrijd gratis</span><span class="adres">opstellingapp.nl</span></div>
+<div class="telefoon"><img src="../img/site-opstelling.webp" alt=""></div>
+</body>
+</html>

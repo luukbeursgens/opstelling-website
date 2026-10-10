@@ -5,7 +5,8 @@
   "scripts": {
     "start": "python3 -m http.server 8081",
     "build": "python3 build.py",
-    "test": "playwright test"
+    "test": "playwright test",
+    "deelkaart": "node tests/deelkaart.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.56.0"

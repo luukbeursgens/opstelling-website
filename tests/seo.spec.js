@@ -41,7 +41,7 @@ for (const p of PAGINAS) {
 
     // sociale kaart
     expect(await page.getAttribute('meta[property="og:title"]', 'content')).toBe(titel);
-    expect(await page.getAttribute('meta[property="og:image"]', 'content')).toBe(SITE + '/img/og.png');
+    expect(await page.getAttribute('meta[property="og:image"]', 'content')).toMatch(new RegExp('^' + SITE.replace(/\./g, '\\.') + '/img/og\\.png\\?v=[0-9a-f]{10}$'));
 
     // elke afbeelding heeft alt-tekst en afmetingen (voorkomt verspringen)
     for (const img of await page.locator('img').all()) {
@@ -343,4 +343,67 @@ test('agendapagina: beschrijving sluit aan op de zoekvraag en belooft geen "éé
   const seizoen = await page.locator('main').textContent();
   expect(seizoen).not.toMatch(/één tik een plaatje/);
   expect(seizoen).not.toMatch(/met één tik weten wie er meegaat/);
+});
+
+// ---------- eerste wedstrijd gratis (okt 2026) ----------
+
+test('de eerste wedstrijd is gratis: overal hetzelfde, ook in de gegevens voor Google en AI', async ({ page }) => {
+  const oud = /eerste 3|3 wedstrijden|3 gratis|drie wedstrijden|eerste \d+ wedstrijden/i;
+  for (const p of PAGINAS) {
+    await page.goto(p);
+    expect(await page.locator('body').innerText(), `oud aantal op ${p}`).not.toMatch(oud);
+    for (const sel of ['meta[name=description]', 'meta[property="og:description"]']) {
+      expect(await page.getAttribute(sel, 'content'), `oud aantal in ${sel} op ${p}`).not.toMatch(oud);
+    }
+    for (const ld of await page.locator('script[type="application/ld+json"]').allTextContents()) {
+      expect(ld, `oud aantal in de gegevens van ${p}`).not.toMatch(oud);
+    }
+  }
+  await page.goto('/');
+  await expect(page.locator('.checks')).toContainText('Eerste wedstrijd gratis');
+  await expect(page.locator('.facts')).toContainText('1 gratis');
+  const app = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent())['@graph'].find(x => x['@type'] === 'SoftwareApplication');
+  expect(app.offers[0].description).toContain('eerste wedstrijd');
+  await page.goto('/prijzen/');
+  await expect(page.locator('.plan').first()).toContainText('eerste wedstrijd');
+  await expect(page.locator('.faq')).toContainText('tweede wedstrijd');
+  // bij de tweede wedstrijd vraagt de app om te betalen, maar die wedstrijd kun je nog spelen
+  await expect(page.locator('.faq')).toContainText('kun je die wedstrijd nog gewoon spelen');
+  const llms = await (await page.request.get('/llms.txt')).text();
+  expect(llms).not.toMatch(oud);
+  expect(llms).toContain('eerste wedstrijd is gratis');
+});
+
+test('deelkaart: nieuwe afbeelding met het goede adres, 1200 bij 630', async ({ page }) => {
+  const png = fs.readFileSync(path.join(process.cwd(), 'img', 'og.png'));
+  expect(png.readUInt32BE(16), 'breedte').toBe(1200);
+  expect(png.readUInt32BE(20), 'hoogte').toBe(630);
+  expect(png.length, 'deelkaart te groot').toBeLessThan(300 * 1024);
+  // de bron van de deelkaart staat in de repository en noemt de juiste tekst en het juiste adres
+  const bron = fs.readFileSync(path.join(process.cwd(), 'tests', 'deelkaart.html'), 'utf8');
+  expect(bron).toContain('opstellingapp.nl');
+  expect(bron).toContain('Eerste wedstrijd gratis');
+  expect(bron).not.toMatch(/opstelling\.nl/);
+  await page.goto('/');
+  expect(await page.getAttribute('meta[property="og:image:alt"]', 'content')).toContain('Opstelling');
+});
+
+test('prijzen kloppen met de app: gratis wedstrijd alleen voor je eerste team, seizoen tot en met 31 juli, betaallink per mail', async ({ page }) => {
+  const fout = /wedstrijd per team gratis|wedstrijd van een team is gratis|gratis wedstrijd per team|1 gratis\s*wedstrijd per team/i;
+  for (const p of PAGINAS) {
+    await page.goto(p);
+    expect(await page.locator('body').innerText(), `gratis wedstrijd 'per team' op ${p}`).not.toMatch(fout);
+    for (const ld of await page.locator('script[type="application/ld+json"]').allTextContents()) expect(ld, `in de gegevens van ${p}`).not.toMatch(fout);
+  }
+  await page.goto('/prijzen/');
+  await expect(page.locator('.plan.featured')).toContainText('31 juli');
+  const faq = page.locator('.faq');
+  await expect(faq).toContainText('betaallink');
+  await expect(faq).toContainText('eerste team');
+  await expect(page.locator('.faq summary', { hasText: 'Hoe lang loopt een seizoen?' })).toHaveCount(1);
+  await expect(page.locator('.faq details', { hasText: 'Kan ik meerdere teams aanmaken?' })).toContainText('alleen je eerste eigen team krijgt een gratis wedstrijd');
+  await expect(page.locator('.faq summary', { hasText: 'Heb ik meerdere teams' })).toHaveCount(0);
+  const llms = await (await page.request.get('/llms.txt')).text();
+  expect(llms).toContain('31 juli');
+  expect(llms).not.toMatch(fout);
 });

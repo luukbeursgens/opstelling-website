@@ -29,8 +29,16 @@ PAGINA_INFO = []
 
 PUBLIEK = True         # False zolang de site nog niet openbaar mag zijn: geen zoekmachines
 PRIJS = "29,99"         # per team, per seizoen, één keer vooraf betalen
-PRIJS_LD = "29.99"      # dezelfde prijs met een punt, voor de gegevens voor zoekmachines
-GRATIS = "3"            # wedstrijden gratis per team
+PRIJS_LD = "29.99"
+SEIZOEN_TOT = "31 juli"   # een seizoen loopt tot en met deze datum      # dezelfde prijs met een punt, voor de gegevens voor zoekmachines
+GRATIS = 1              # aantal gratis wedstrijden per team
+# Zinnen over de gratis wedstrijd(en), in enkelvoud of meervoud, zodat ze kloppen als GRATIS verandert
+GRATIS_KORT = "Eerste wedstrijd gratis" if GRATIS == 1 else f"Eerste {GRATIS} wedstrijden gratis"
+GRATIS_ZIN = "De eerste wedstrijd is gratis" if GRATIS == 1 else f"De eerste {GRATIS} wedstrijden zijn gratis"
+GRATIS_WAT = "de eerste wedstrijd" if GRATIS == 1 else f"de eerste {GRATIS} wedstrijden"
+GRATIS_IS = "is" if GRATIS == 1 else "zijn"
+GRATIS_WOORD = "wedstrijd" if GRATIS == 1 else "wedstrijden"
+BETAALD_VANAF = {1: "tweede", 2: "derde", 3: "vierde", 4: "vijfde"}.get(GRATIS, "volgende")
 
 # Cloudflare Web Analytics: plak hier de token uit het Cloudflare-dashboard
 # (Web Analytics > je site > "Manage site" > JS snippet, de waarde achter "token").
@@ -42,6 +50,8 @@ CF_TOKEN = "622bc38b1c73451abece02918dc7e2ea"
 # halen browsers meteen de nieuwe versie op in plaats van een oude uit hun geheugen.
 import hashlib
 CSS_VERSIE = hashlib.sha256((OUT / "style.css").read_bytes()).hexdigest()[:10]
+# Zelfde voor de deelkaart: afbeeldingen worden een jaar bewaard, dus een nieuwe kaart krijgt een nieuw adres
+OG_VERSIE = hashlib.sha256((OUT / "img" / "og.png").read_bytes()).hexdigest()[:10]
 
 
 def kruimelpad(naam):
@@ -98,9 +108,10 @@ def page(path, title, description, body, extra_ld=None, keywords_hint="", index=
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="{SITE}/img/og.png">
+<meta property="og:image" content="{SITE}/img/og.png?v={OG_VERSIE}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Opstelling: eerlijke speeltijd voor elk kind in je jeugdteam. {GRATIS_KORT}.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2F7A4B">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -141,7 +152,7 @@ def page(path, title, description, body, extra_ld=None, keywords_hint="", index=
 
 
 def cta(tekst="Probeer het met je eigen team", sub=None):
-    sub = sub or f"De eerste {GRATIS} wedstrijden zijn gratis. Daarna {PRIJS} euro per team voor het hele seizoen, één keer vooraf. Geen installatie, geen wachtwoord."
+    sub = sub or f"{GRATIS_ZIN}. Daarna {PRIJS} euro per team voor het hele seizoen, één keer vooraf. Geen installatie, geen wachtwoord."
     return f"""<section class="final">
   <div class="box">
     <h2>{tekst}</h2>
@@ -177,7 +188,7 @@ GIDSEN = {
     "/knvb-wedstrijdvormen/": ("Overzicht", "KNVB-wedstrijdvormen", "Speelduur, aantal spelers en wisselmomenten van O7 tot en met O12 in één tabel."),
     TIPS: ("Functie", "Tips en tops per speler", "Zie waar elk kind aan werkt, wat al gelukt is en waar het team op moet trainen."),
     AGENDA: ("Handleiding", "Voetbal.nl-kalender koppelen", "Alle wedstrijden van het seizoen in één keer klaar, plus het plaatje voor de ouders."),
-    "/prijzen/": ("Prijzen", "Wat Opstelling kost", f"De eerste {GRATIS} wedstrijden gratis, daarna {PRIJS} euro per team per seizoen, één keer vooraf."),
+    "/prijzen/": ("Prijzen", "Wat Opstelling kost", f"{GRATIS_KORT}, daarna {PRIJS} euro per team per seizoen, één keer vooraf."),
 }
 
 
@@ -202,13 +213,13 @@ def prijskaarten():
       <div class="plan">
         <h3>Uitproberen</h3>
         <p class="amount">Gratis</p>
-        <p>De eerste {GRATIS} wedstrijden van je team. Geen betaalgegevens nodig.</p>
+        <p>{GRATIS_WAT.capitalize()} van je team. Geen betaalgegevens nodig.</p>
         <a class="btn btn-ghost" href="{AANMELDEN}">Maak een team aan</a>
       </div>
       <div class="plan featured">
         <div class="top"><h3>Per team</h3><span class="tag">Eén keer per seizoen</span></div>
         <p class="amount">€ {PRIJS}<span>per seizoen</span></p>
-        <p>Onbeperkt wedstrijden plannen en de speeltijd bijhouden, het hele seizoen. Je betaalt één keer vooraf.</p>
+        <p>Onbeperkt wedstrijden plannen en de speeltijd bijhouden, tot en met {SEIZOEN_TOT}. Je betaalt één keer per seizoen.</p>
         <a class="btn btn-main" href="{AANMELDEN}">Begin met je team</a>
       </div>
     </div>
@@ -254,17 +265,17 @@ def app_ld():
          ],
          "offers": [
              {"@type": "Offer", "name": "Uitproberen", "price": "0", "priceCurrency": "EUR",
-              "description": f"De eerste {GRATIS} wedstrijden per team gratis, zonder betaalgegevens."},
+              "description": f"{GRATIS_WAT.capitalize()} met je eerste team gratis, zonder betaalgegevens."},
              {"@type": "Offer", "name": "Per team per seizoen", "price": PRIJS_LD, "priceCurrency": "EUR",
               "url": SITE + "/prijzen/",
-              "description": f"{PRIJS} euro per team voor een heel seizoen, één keer vooraf betaald. Medetrainers gratis."},
+              "description": f"{PRIJS} euro per team voor een seizoen, tot en met {SEIZOEN_TOT}, één keer betaald. Medetrainers gratis."},
          ],
      }
 
 
 # ---------------------------------------------------------------- home
 home_faq = [
-    ("Wat kost Opstelling?", f"De eerste {GRATIS} wedstrijden van een team zijn gratis, zodat je het rustig kunt uitproberen. Daarna betaal je {PRIJS} euro voor dat team, één keer vooraf voor het hele seizoen. Medetrainers die je toevoegt betalen niets."),
+    ("Wat kost Opstelling?", f"{GRATIS_ZIN}, zodat je het eerst kunt uitproberen. Daarna betaal je {PRIJS} euro per team, één keer voor het hele seizoen (tot en met {SEIZOEN_TOT}). Medetrainers die je toevoegt betalen niets."),
     ("Moet ik iets installeren?", "Nee. Opstelling werkt in je browser en je kunt hem op je beginscherm zetten, zodat hij opent als een gewone app."),
     ("Moet ik alle wedstrijden zelf invoeren?", "Nee. Koppel de teamkalender uit de Voetbal.nl-app en alle wedstrijden van het seizoen komen er vanzelf in, met aftrap, tegenstander en locatie. Zelf een wedstrijd toevoegen kan ook altijd."),
     ("Kan ik ook bijhouden waar een speler aan moet werken?", "Ja. Bij elke speler leg je tips en tops vast. Je ziet wat al gelukt is en waar het team als geheel op kan trainen. Alleen trainers van het team zien dit."),
@@ -290,7 +301,7 @@ tab_schermen = "".join(
 
 page("/",
      "Opstelling: eerlijke speeltijd en opstellingen voor jeugdvoetbal",
-     f"Maak in een minuut een opstelling, verdeel de speeltijd eerlijk over het seizoen en deel een verslag met de ouders. Eerste {GRATIS} wedstrijden gratis.",
+     f"Maak in een minuut een opstelling, verdeel de speeltijd eerlijk over het seizoen en deel een verslag met de ouders. {GRATIS_KORT}.",
      f"""
 <section class="hero band">
   <div class="pitch" aria-hidden="true"></div>
@@ -304,7 +315,7 @@ page("/",
         <a class="btn btn-ghost" href="#hoe">Bekijk hoe het werkt</a>
       </div>
       <ul class="checks">
-        <li>Eerste {GRATIS} wedstrijden gratis, zonder betaalgegevens</li>
+        <li>{GRATIS_KORT}, zonder betaalgegevens</li>
         <li>Alle wedstrijden van het seizoen in één keer uit Voetbal.nl</li>
         <li>Werkt op elke telefoon, niets te installeren</li>
       </ul>
@@ -320,7 +331,7 @@ page("/",
   <div class="wrap">
     <div class="fact"><strong>1 minuut</strong><span>voor een opstelling</span></div>
     <div class="fact"><strong>O7–O12</strong><span>KNVB-regels ingebouwd</span></div>
-    <div class="fact"><strong>{GRATIS} gratis</strong><span>wedstrijden per team</span></div>
+    <div class="fact"><strong>{GRATIS} gratis</strong><span>{GRATIS_WOORD} om te proberen</span></div>
     <div class="fact"><strong>€ {PRIJS}</strong><span>per team per seizoen</span></div>
   </div>
 </section>
@@ -413,7 +424,7 @@ page("/",
   <div class="wrap">
     <div class="head">
       <h2>Probeer gratis!</h2>
-      <p>Probeer het rustig uit met je eigen team. Pas als je doorgaat, betaal je een klein bedrag per team.</p>
+      <p>Probeer het eerst uit met je eigen team. Pas als je doorgaat, betaal je een klein bedrag per team.</p>
     </div>
     {prijskaarten()}
   </div>
@@ -422,7 +433,7 @@ page("/",
 {gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/", titel="Handig voor elke jeugdtrainer")}
 
 {faq_html(home_faq, open_eerste=True)}
-{cta("Probeer het zaterdag met je eigen team", f"De eerste {GRATIS} wedstrijden zijn gratis. Geen installatie, geen wachtwoord.")}
+{cta("Probeer het zaterdag met je eigen team", f"{GRATIS_ZIN}. Geen installatie, geen wachtwoord.")}
 """,
      extra_ld=[app_ld()] + faq_ld(home_faq))
 
@@ -435,7 +446,7 @@ ws_faq = [
 ]
 page("/wisselschema-maken/",
      "Wisselschema maken voor jeugdvoetbal: zo doe je het snel",
-     f"Een wisselschema dat langs de lijn werkt, zonder rekenen: Opstelling maakt het per wedstrijd en houdt de speeltijd bij. Eerste {GRATIS} wedstrijden gratis.",
+     f"Een wisselschema dat langs de lijn werkt, zonder rekenen: Opstelling maakt het per wedstrijd en houdt de speeltijd bij. {GRATIS_KORT}.",
      f"""
 <section class="prose">
   <h1>Een wisselschema maken voor je jeugdteam</h1>
@@ -459,7 +470,7 @@ page("/wisselschema-maken/",
 </section>
 
 {faq_html(ws_faq)}
-{cta("Laat de app je wisselschema maken", f"Aanvinken wie er is, keepers kiezen en klaar. De eerste {GRATIS} wedstrijden zijn gratis.")}
+{cta("Laat de app je wisselschema maken", f"Aanvinken wie er is, keepers kiezen en klaar. {GRATIS_ZIN}.")}
 
 {gidsen("/speeltijd-eerlijk-verdelen/", AGENDA, "/knvb-wedstrijdvormen/")}
 """, extra_ld=faq_ld(ws_faq))
@@ -473,7 +484,7 @@ st_faq = [
 ]
 page("/speeltijd-eerlijk-verdelen/",
      "Eerlijke speeltijd in een jeugdteam, zonder bijhouden",
-     f"Elk kind ongeveer evenveel speeltijd, ook als er elke week anderen zijn? Opstelling rekent en onthoudt het voor je. Eerste {GRATIS} wedstrijden gratis.",
+     f"Elk kind ongeveer evenveel speeltijd, ook als er elke week anderen zijn? Opstelling rekent en onthoudt het voor je. {GRATIS_KORT}.",
      f"""
 <section class="prose">
   <h1>Eerlijke speeltijd in een jeugdteam</h1>
@@ -497,7 +508,7 @@ page("/speeltijd-eerlijk-verdelen/",
 </section>
 
 {faq_html(st_faq)}
-{cta("Laat de speeltijd zichzelf bijhouden", f"Opstelling verdeelt de minuten en onthoudt wie achterliep. De eerste {GRATIS} wedstrijden zijn gratis.")}
+{cta("Laat de speeltijd zichzelf bijhouden", f"Opstelling verdeelt de minuten en onthoudt wie achterliep. {GRATIS_ZIN}.")}
 
 {gidsen("/wisselschema-maken/", TIPS, "/prijzen/")}
 """, extra_ld=faq_ld(st_faq))
@@ -553,7 +564,7 @@ tt_faq = [
     ("Kan ik een eigen tip toevoegen?", "Ja. Naast de vaste lijst met vaardigheden kun je altijd een eigen aantekening typen, zoals meer praten in het veld."),
     ("Kunnen medetrainers ook tips en tops geven?", "Ja. Iedere trainer van het team kan ze toevoegen en ziet dezelfde lijst."),
     ("Hoe zie ik of een speler vooruitgaat?", "Een tip die gelukt is, zet je met één tik om naar een top; hij blijft zichtbaar onder Gelukt. In het teamoverzicht kies je tussen de laatste zes weken en het hele seizoen."),
-    ("Wat kost het?", f"Tips en tops zitten gewoon in Opstelling. De eerste {GRATIS} wedstrijden van een team zijn gratis, daarna kost het {PRIJS} euro per team per seizoen."),
+    ("Wat kost het?", f"Tips en tops zitten gewoon in Opstelling. {GRATIS_ZIN}, daarna kost het {PRIJS} euro per team per seizoen."),
 ]
 lijst = lambda items: "".join(f"<li>{v}</li>" for v in items)
 page(TIPS,
@@ -597,7 +608,7 @@ page(TIPS,
 </section>
 
 {faq_html(tt_faq)}
-{cta("Zie waar je team aan werkt", f"Tips en tops zitten gewoon in Opstelling. De eerste {GRATIS} wedstrijden zijn gratis.")}
+{cta("Zie waar je team aan werkt", f"Tips en tops zitten gewoon in Opstelling. {GRATIS_ZIN}.")}
 
 {gidsen("/speeltijd-eerlijk-verdelen/", AGENDA, "/knvb-wedstrijdvormen/")}
 """, extra_ld=faq_ld(tt_faq), kruimel="Tips en tops")
@@ -663,7 +674,7 @@ page(AGENDA,
 </section>
 
 {faq_html(ag_faq)}
-{cta("Zet je seizoen in één keer klaar", f"Koppel je Voetbal.nl-kalender, deel de verzameltijd met de ouders en maak zaterdag de eerste opstelling. De eerste {GRATIS} wedstrijden zijn gratis.")}
+{cta("Zet je seizoen in één keer klaar", f"Koppel je Voetbal.nl-kalender, deel de verzameltijd met de ouders en maak zaterdag de eerste opstelling. {GRATIS_ZIN}.")}
 
 {gidsen("/wisselschema-maken/", TIPS, "/prijzen/")}
 """, extra_ld=faq_ld(ag_faq), kruimel="Wedstrijdagenda")
@@ -671,15 +682,16 @@ page(AGENDA,
 # ------------------------------------------------------------- prijzen
 pr_faq = [
     ("Betaal ik per trainer of per team?", f"Per team. Een team kost {PRIJS} euro per seizoen, één keer vooraf betaald. Alle trainers die je aan dat team toevoegt, gebruiken de app gratis."),
-    ("Wanneer betaal ik?", f"Na de eerste {GRATIS} gratis wedstrijden. Wil je de opstelling voor de volgende wedstrijd maken, dan betaal je één keer {PRIJS} euro en kun je de rest van het seizoen verder."),
-    ("Wat zit er in de gratis proef?", f"De eerste {GRATIS} wedstrijden van een team, met alle functies: opstellingen, het wedstrijdscherm, verslagen en de speeltijd over het seizoen."),
+    ("Wanneer betaal ik?", f"Bij de opstelling voor je {BETAALD_VANAF} wedstrijd vraagt de app je om een seizoen te regelen: één keer {PRIJS} euro per team, tot en met {SEIZOEN_TOT}. Kies je voor verder, dan krijg je de betaallink per mail en kun je die wedstrijd nog gewoon spelen."),
+    ("Hoe lang loopt een seizoen?", f"Tot en met {SEIZOEN_TOT}. Je betaalt één keer en kunt daarna tot het eind van het seizoen onbeperkt verder, met alle trainers van het team."),
+    ("Wat zit er in de gratis proef?", f"{GRATIS_WAT.capitalize()} met je eerste team, met alle functies: opstellingen, het wedstrijdscherm, verslagen en de speeltijd over het seizoen."),
     ("Zit ik ergens aan vast?", "Nee. Je betaalt één keer vooraf voor het hele seizoen. Daarna komen er geen maandelijkse of tussentijdse kosten bij."),
     ("Wat gebeurt er met mijn gegevens als ik stop?", "Je spelers, wedstrijden en verslagen blijven zichtbaar. Je kunt alleen geen nieuwe wedstrijden meer plannen tot je weer betaalt."),
-    ("Heb ik meerdere teams? ", "Dan betaal je per team. Train je twee teams, dan zijn dat twee keer de kosten."),
+    ("Kan ik meerdere teams aanmaken?", f"Ja, maar alleen je eerste eigen team krijgt een gratis wedstrijd. Voor elk volgend team regel je meteen een seizoen (€ {PRIJS} per team). Je kunt het team wel al inrichten. Wil je meteen spelen, dan vraag je een betaallink aan en kun je al één wedstrijd spelen terwijl de betaling loopt."),
 ]
 page("/prijzen/",
      f"Prijzen: {PRIJS} euro per team per seizoen, eerst gratis",
-     f"Opstelling kost {PRIJS} euro per team per seizoen, één keer vooraf betaald. De eerste {GRATIS} wedstrijden zijn gratis. Medetrainers gebruiken de app kosteloos.",
+     f"Opstelling kost {PRIJS} euro per team per seizoen, één keer vooraf betaald. {GRATIS_ZIN}. Medetrainers gebruiken de app kosteloos.",
      f"""
 <section class="prose">
   <h1>Wat Opstelling kost</h1>
@@ -698,7 +710,7 @@ page("/prijzen/",
 </section>
 
 {faq_html(pr_faq)}
-{cta("Begin met je eigen team", f"De eerste {GRATIS} wedstrijden zijn gratis, zonder betaalgegevens.")}
+{cta("Begin met je eigen team", f"{GRATIS_ZIN}, zonder betaalgegevens.")}
 """, extra_ld=[app_ld()] + faq_ld(pr_faq))
 
 # ------------------------------------------------------------- contact
@@ -782,7 +794,7 @@ llms = f"""# Opstelling
 Kernfeiten:
 
 - Voor wie: jeugdtrainers in Nederland, teams van O7 tot en met O12, volgens de KNVB-wedstrijdvormen (4 tegen 4, 6 tegen 6, 8 tegen 8).
-- Prijs: de eerste {GRATIS} wedstrijden per team zijn gratis, daarna {PRIJS} euro per team per seizoen, één keer vooraf betaald. Medetrainers betalen niets.
+- Prijs: {GRATIS_WAT} {GRATIS_IS} gratis (voor het eerste team van een nieuwe trainer), daarna {PRIJS} euro per team per seizoen, één keer betaald. Een seizoen loopt tot en met {SEIZOEN_TOT}. Bij de opstelling voor de {BETAALD_VANAF} wedstrijd krijgt de trainer een betaallink per mail en kan die wedstrijd nog spelen. Medetrainers betalen niets.
 - Werkt in de browser op elke telefoon; niets te installeren. App: {APP}
 - Eerlijke speeltijd: de app verdeelt de minuten binnen een wedstrijd en geeft wie eerder minder speelde voorrang bij de volgende wedstrijd.
 - Wedstrijdagenda: koppel de teamkalender uit de Voetbal.nl-app (kost 1,99 euro bij Voetbal.nl) en alle wedstrijden staan klaar, met aftrap, tegenstander, thuis of uit en locatie. Wijzigingen worden automatisch bijgewerkt.
