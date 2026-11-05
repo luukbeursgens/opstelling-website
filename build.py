@@ -499,7 +499,7 @@ page("/wisselschema-maken/",
   <h3>6 tegen 6 met 9 spelers</h3>
   <p>Met negen spelers zitten er elk kwart drie kinderen aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Bram en Stijn beginnen de volgende wedstrijd daarom in het veld. Wil je het binnen de wedstrijd gelijker, wissel dan ook halverwege een kwart.</p>
   {wisselschema_tabel("Wisselschema 6 tegen 6 met 9 spelers, 2 × 20 minuten (O8 en O9)", 10, WS_6_MET_9)}
-  <p>Bij O10 speel je 2 × 25 minuten. Het schema blijft hetzelfde, alleen duurt elk kwart 12,5 minuut.</p>
+  <p>Bij O10 speel je 2 × 25 minuten. Het schema blijft hetzelfde, alleen duurt elk kwart 12,5 minuut. Alle regels voor 6 tegen 6 op een rij staan op de pagina over <a href="/jo9/">JO9</a>.</p>
 
   <h2>Wisselschema voetbal 8 tegen 8 (O11 en O12)</h2>
   <p>Bij O11 en O12 speel je 2 × 30 minuten, dus vier kwarten van een kwartier. Met tien spelers zitten er elk kwart twee kinderen aan de kant. De twee keepers spelen de hele wedstrijd: een helft op doel en een helft in het veld. De andere acht spelen elk 45 minuten.</p>
@@ -604,6 +604,7 @@ page("/knvb-wedstrijdvormen/",
     <tbody>{tabel}</tbody>
   </table></div>
   <p>Elke helft heeft halverwege een korte time-out. In de praktijk speel je dus vier kwarten, met de time-outs en de rust als wisselmomenten.</p>
+  <p>Alles over één leeftijd, met spelregels, speeltijd, opstelling en wisselschema: <a href="/jo9/">JO9 (O9)</a>.</p>
 
   <h2>Wat betekent dit voor je speeltijd?</h2>
   <p>Bij 6 tegen 6 met 2 × 20 minuten zijn er 240 speelminuten te verdelen (zes plekken maal veertig minuten). Met negen kinderen komt dat neer op ongeveer 27 minuten per kind, keepen meegerekend. Zijn er twaalf kinderen, dan blijft er twintig minuten per kind over, en wordt het belangrijker om over de weken heen bij te houden wie minder speelde.</p>
@@ -617,6 +618,108 @@ page("/knvb-wedstrijdvormen/",
 
 {gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/prijzen/")}
 """, extra_ld=faq_ld(knvb_faq))
+
+# ------------------------------------------------ pagina's per leeftijd
+# Eén pagina per leeftijd (O9 = JO9), omdat trainers en ouders per leeftijd zoeken:
+# "spelregels jo9", "speeltijd jo9", "jo9 hoeveel spelers". Bron: KNVB-infographic per wedstrijdvorm.
+
+def speeltijd_per_kind(plekken, minuten, aantallen):
+    """Tabel: hoeveel minuten elk kind ongeveer speelt bij een bepaald aantal spelers."""
+    rijen = "".join(f"<tr><th scope='row'>{n} spelers</th><td>{n - plekken}</td><td>ongeveer {round(plekken * minuten / n)} minuten</td></tr>"
+                    for n in aantallen)
+    return f"""<div class="tablewrap"><table>
+    <caption>Speeltijd per kind bij {plekken} tegen {plekken} en {minuten} minuten speeltijd ({plekken * minuten} speelminuten)</caption>
+    <thead><tr><th scope="col">Aantal spelers</th><th scope="col">Wissels per kwart</th><th scope="col">Speeltijd per kind</th></tr></thead>
+    <tbody>{rijen}</tbody>
+  </table></div>"""
+
+
+def in_het_kort(rijen, onderschrift):
+    regels = "".join(f"<tr><th scope='row'>{a}</th><td>{b}</td></tr>" for a, b in rijen)
+    return f"""<div class="tablewrap"><table>
+    <caption>{onderschrift}</caption>
+    <tbody>{regels}</tbody>
+  </table></div>"""
+
+
+o9_faq = [
+    ("Hoe lang duurt een wedstrijd bij JO9?", "Twee helften van 20 minuten. Halverwege elke helft is er een time-out van maximaal twee minuten, en de rust duurt maximaal tien minuten. Met alles erbij ben je ongeveer 55 minuten bezig."),
+    ("Met hoeveel spelers speelt JO9?", "Met 6 tegen 6, de keeper meegerekend. Je mag onbeperkt wisselen, dus een team heeft vaak 7 tot 10 spelers."),
+    ("Hoe groot is het veld bij JO9?", "Een bijna kwart veld van 42,5 bij 30 meter, met pupillendoelen van 5 bij 2 meter. Er wordt gespeeld met een bal maat 4 (290 gram)."),
+    ("Is er buitenspel bij JO9?", "Nee. De buitenspelregel geldt niet bij 6 tegen 6."),
+    ("Wie fluit er bij JO9?", "Een spelbegeleider. Die staat langs het veld, laat de kinderen zoveel mogelijk zelf spelen en grijpt alleen in als de spelregels duidelijk niet goed gaan. Hij of zij legt dan uit wat de regel is."),
+    ("Worden de uitslagen en standen bijgehouden?", "De KNVB publiceert bij O7 tot en met O10 geen standen en uitslagen. De uitslag wordt wel doorgegeven, zodat teams op het juiste niveau worden ingedeeld."),
+    ("Wat is het verschil tussen JO9 en O9?", "Er is geen verschil. Sinds seizoen 2026/'27 heet JO9 bij de KNVB officieel O9 (Onder 9). Veel clubs en ouders zeggen nog JO9."),
+]
+page("/jo9/",
+     "JO9 voetbal: spelregels, speeltijd, opstelling en wisselschema",
+     "Alles over JO9 (O9): spelregels, hoe lang een wedstrijd duurt, hoeveel spelers, het veld, een opstelling voor 6 tegen 6 en een eerlijk wisselschema.",
+     f"""
+<section class="prose">
+  {kruimelpad("JO9")}
+  <h1>JO9: spelregels, speeltijd en opstelling</h1>
+  <p class="lead">Bij JO9, sinds dit seizoen officieel O9 (Onder 9), spelen kinderen 6 tegen 6 op een kwart veld. Op deze pagina staat alles wat je als trainer of ouder wilt weten: de spelregels, hoe lang een wedstrijd duurt, een opstelling en een wisselschema waarmee iedereen eerlijk speelt.</p>
+
+  <h2>JO9 in het kort</h2>
+  {in_het_kort([
+      ("Leeftijd", "Onder 9: in seizoen 2026/'27 geboren in 2018"),
+      ("Spelvorm", "6 tegen 6, met keeper"),
+      ("Veld", "42,5 × 30 meter (bijna een kwart veld)"),
+      ("Doelen", "Pupillendoel, 5 × 2 meter"),
+      ("Bal", "Maat 4 (290 gram)"),
+      ("Speeltijd", "2 × 20 minuten, met een time-out halverwege elke helft"),
+      ("Time-out en rust", "Time-out maximaal 2 minuten, rust maximaal 10 minuten"),
+      ("Wisselen", "Onbeperkt, een gewisselde speler mag terug"),
+      ("Leiding", "Spelbegeleider langs het veld"),
+      ("Buitenspel", "Nee"),
+      ("Strafschop", "Vanaf 7 meter"),
+      ("Standen", "Geen standen en uitslagen gepubliceerd"),
+  ], "JO9 (O9) in het kort, seizoen 2026/'27")}
+
+  <h2>Spelregels bij JO9</h2>
+  <ul>
+    <li><strong>Aftrap:</strong> in het midden van het veld, beide teams starten op eigen helft. Uit een aftrap kun je niet direct scoren. Na een doelpunt neemt het team dat het tegendoelpunt kreeg de aftrap.</li>
+    <li><strong>Uitbal:</strong> je dribbelt de bal in. Inpassen of inschieten mag niet. Na het indribbelen mag die speler wel meteen scoren.</li>
+    <li><strong>Achterbal:</strong> de keeper of een veldspeler dribbelt, past of schiet de bal in vanaf de grond, binnen het keepersgebied.</li>
+    <li><strong>Hoekschop:</strong> vanaf de hoek indribbelen, inpassen of inschieten. Je mag er direct uit scoren.</li>
+    <li><strong>Vrije bal:</strong> altijd direct. Je mag dribbelen, passen of schieten. De tegenstander staat bij elke hervatting op minimaal 5 meter.</li>
+    <li><strong>Keepersgebied:</strong> tot 7 meter van de achterlijn, gemarkeerd met twee pionnen. Tot daar mag de keeper de bal in de handen hebben.</li>
+    <li><strong>Terugspeelbal:</strong> speelt een teamgenoot de bal met de voet terug, dan mag de keeper hem niet oppakken.</li>
+    <li><strong>Strafschop:</strong> alleen als een duidelijke scoringskans in het keepersgebied wordt ontnomen. Na de wedstrijd nemen de teams strafschoppen tegen elkaar.</li>
+    <li><strong>Voor en na de wedstrijd</strong> begroeten spelers en begeleiders elkaar met een boks.</li>
+  </ul>
+  <p>Dit is een samenvatting. De volledige regels staan in de infographic 6 tegen 6 op knvb.nl. Het overzicht van alle leeftijden vind je bij de <a href="/knvb-wedstrijdvormen/">KNVB-wedstrijdvormen</a>.</p>
+
+  <h2>Hoeveel speeltijd krijgt elk kind?</h2>
+  <p>Bij 6 tegen 6 en 2 × 20 minuten zijn er 240 speelminuten te verdelen, de keeper meegerekend. Hoeveel elk kind speelt, hangt af van het aantal kinderen dat er is:</p>
+  {speeltijd_per_kind(6, 40, [7, 8, 9, 10, 11, 12])}
+  <p>Met acht kinderen komt het precies uit. Met negen of meer lukt dat niet in één wedstrijd. Laat wie deze keer minder speelde, de volgende keer beginnen. Meer daarover lees je bij <a href="/speeltijd-eerlijk-verdelen/">speeltijd eerlijk verdelen</a>.</p>
+
+  <h2>Wisselschema voor JO9</h2>
+  <p>De time-outs en de rust verdelen de wedstrijd in vier kwarten van tien minuten. Dat zijn de handigste wisselmomenten. Een voorbeeld met acht spelers, waarin iedereen 30 minuten speelt:</p>
+  {wisselschema_tabel("Wisselschema JO9, 6 tegen 6 met 8 spelers, 2 × 20 minuten", 10, WS_6_MET_8)}
+  <p>Meer voorbeelden, ook met negen spelers, staan bij <a href="/wisselschema-maken/">wisselschema maken</a>.</p>
+
+  <h2>Opstelling bij JO9</h2>
+  <p>Met een keeper en vijf veldspelers zijn twee opstellingen het meest gebruikt:</p>
+  <ul>
+    <li><strong>1-2-1-2:</strong> twee verdedigers, één middenvelder en twee aanvallers. Een ruit, met veel driehoekjes om naar elkaar te passen.</li>
+    <li><strong>1-3-2:</strong> drie verdedigers en twee aanvallers. Wat steviger achterin, maar met minder verbinding tussen verdediging en aanval.</li>
+  </ul>
+  <p>Bij JO9 is het vooral belangrijk dat kinderen veel aan de bal komen en verschillende plekken leren kennen. Laat ze dus ook eens op een andere positie spelen.</p>
+  <div class="duo">
+    <figure>{telefoon("site-opstelling.webp", "Opstelling JO9, 6 tegen 6 in de Opstelling app: keeper Daan, twee verdedigers, een middenvelder en twee aanvallers, met de wissels eronder")}<figcaption>Een opstelling voor 6 tegen 6 in de app</figcaption></figure>
+  </div>
+
+  <h2>Wat doen trainers en ouders?</h2>
+  <p>De KNVB vraagt de trainer om positief te coachen vanaf de zijlijn. Ouders moedigen positief aan, achter de omheining of langs de zijlijn. Houd rond het veld 2 meter vrij, ook voor de wisselspelers.</p>
+</section>
+
+{faq_html(o9_faq)}
+{cta("Laat de app je JO9-wedstrijd regelen", f"Opstelling kent de regels van JO9, maakt de opstelling en het wisselschema, en houdt de speeltijd bij over het hele seizoen. {GRATIS_ZIN}.")}
+
+{gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/")}
+""", extra_ld=faq_ld(o9_faq), kruimel="JO9")
 
 # ------------------------------------------------ tips en tops per speler
 VAARDIGHEDEN_BAL = ["Passen over de grond", "Passen door de lucht", "Schieten op doel", "Aannemen in stilstand",
