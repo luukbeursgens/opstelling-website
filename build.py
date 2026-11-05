@@ -183,11 +183,11 @@ def lees_verder(items, titel="Verder lezen"):
 
 
 GIDSEN = {
-    "/wisselschema-maken/": ("Handleiding", "Een wisselschema maken", "In vijf stappen een schema dat langs de lijn ook echt werkt."),
+    "/wisselschema-maken/": ("Handleiding", "Een wisselschema maken", "Voorbeeldschema's voor 6 tegen 6 en 8 tegen 8, en de regels voor wisselen."),
     "/speeltijd-eerlijk-verdelen/": ("Achtergrond", "Speeltijd eerlijk verdelen", "Waarom het ertoe doet en hoe je het bijhoudt zonder rekenwerk."),
     "/knvb-wedstrijdvormen/": ("Overzicht", "KNVB-wedstrijdvormen", "Speelduur, aantal spelers en wisselmomenten van O7 tot en met O12 in één tabel."),
     TIPS: ("Functie", "Tips en tops per speler", "Zie waar elk kind aan werkt, wat al gelukt is en waar het team op moet trainen."),
-    AGENDA: ("Handleiding", "Voetbal.nl-kalender koppelen", "Alle wedstrijden van het seizoen in één keer klaar, plus het plaatje voor de ouders."),
+    AGENDA: ("Handleiding", "Voetbal.nl-agenda koppelen","Alle wedstrijden van het seizoen in één keer klaar, plus het plaatje voor de ouders."),
     "/prijzen/": ("Prijzen", "Wat Opstelling kost", f"{GRATIS_KORT}, daarna {PRIJS} euro per team per seizoen, één keer vooraf."),
 }
 
@@ -438,21 +438,81 @@ page("/",
      extra_ld=[app_ld()] + faq_ld(home_faq))
 
 # ------------------------------------------------- wisselschema maken
+# Voorbeeldschema's: per speler wat hij of zij elk kwart doet (K = keeper, V = veld, W = wissel)
+WS_LABEL = {"K": "Keeper", "V": "Veld", "W": "Wissel"}
+
+
+def wisselschema_tabel(onderschrift, kwart_minuten, schema):
+    """Tabel met per speler de vier kwarten en de totale speeltijd."""
+    rijen = "".join(
+        f"<tr><th scope='row'>{naam}</th>"
+        + "".join(f"<td class='ws-{k.lower()}'>{WS_LABEL[k]}</td>" for k in kwarten)
+        + f"<td>{sum(kwart_minuten for k in kwarten if k != 'W')} min</td></tr>"
+        for naam, kwarten in schema)
+    # Op de telefoon valt het woord "Kwart" weg, zodat de tabel in beeld past
+    kop = "".join(f'<th scope="col"><span class="ws-lang">Kwart </span>{i}</th>' for i in range(1, 5))
+    return f"""<div class="tablewrap"><table class="ws">
+    <caption>{onderschrift}</caption>
+    <thead><tr><th scope="col">Speler</th>{kop}<th scope="col">Totaal</th></tr></thead>
+    <tbody>{rijen}</tbody>
+  </table></div>"""
+
+
+WS_6_MET_8 = [("Daan", "KKWV"), ("Milan", "VWKK"), ("Luca", "VWVV"), ("Noud", "VVWV"),
+              ("Finn", "VVVW"), ("Jesse", "VVVW"), ("Sven", "WVVV"), ("Bram", "WVVV")]
+WS_6_MET_9 = [("Daan", "KKWV"), ("Milan", "VWKK"), ("Luca", "VWVV"), ("Noud", "VWVV"),
+              ("Finn", "VVWV"), ("Jesse", "VVWV"), ("Sven", "WVVW"), ("Bram", "WVVW"), ("Stijn", "WVVW")]
+WS_8_MET_10 = [("Daan", "KKVV"), ("Milan", "VVKK"), ("Luca", "WVVV"), ("Noud", "WVVV"), ("Finn", "VWVV"),
+               ("Jesse", "VWVV"), ("Sven", "VVWV"), ("Bram", "VVWV"), ("Stijn", "VVVW"), ("Ruben", "VVVW")]
+
 ws_faq = [
+    ("Hoe maak je een wisselschema voor voetbal?", "Deel de wedstrijd op in vaste blokken, bij de pupillen meestal de vier kwarten tussen de time-outs en de rust. Tel de plekken per blok, verdeel ze zo gelijk mogelijk over de kinderen die er zijn, en zet de keepers apart. Wie deze keer minder speelt, begint de volgende wedstrijd in het veld."),
+    ("Wat zijn de regels voor wisselen bij jeugdvoetbal?", "Bij de pupillen (O8 tot en met O12) mag je onbeperkt wisselen, en een gewisselde speler mag weer terug. Je wisselt bij een onderbreking, en de time-outs en de rust zijn de handigste momenten. De officiële regels staan op knvb.nl."),
     ("Mag je bij de pupillen onbeperkt wisselen?", "Ja. Bij de pupillen mag je doorwisselen; de time-outs en de rust zijn de natuurlijke momenten."),
+    ("Welke app gebruik je voor een wisselschema?", "Er zijn meerdere apps voor jeugdtrainers. Opstelling maakt het wisselschema per wedstrijd op basis van wie er is, houdt de speeltijd over het hele seizoen bij en geeft tijdens de wedstrijd een seintje bij elk wisselmoment."),
     ("Wat als er iemand geblesseerd raakt of te laat komt?", "Dan klopt je schema niet meer. In Opstelling geef je de wijziging door en maakt de app de rest van de wedstrijd opnieuw, met de al gespeelde minuten erin verwerkt."),
     ("Kan een medetrainer hetzelfde schema zien?", "Ja. Iedere trainer van het team ziet dezelfde wedstrijd, kan de opstelling klaarzetten en tijdens de wedstrijd live meekijken."),
     ("Kan de keeper ook in het veld spelen?", "Als je met wisselende keepers speelt wel, en de app regelt dat: wie een helft keept, krijgt in de andere helft veldtijd."),
 ]
 page("/wisselschema-maken/",
-     "Wisselschema maken voor jeugdvoetbal: zo doe je het snel",
-     f"Een wisselschema dat langs de lijn werkt, zonder rekenen: Opstelling maakt het per wedstrijd en houdt de speeltijd bij. {GRATIS_KORT}.",
+     "Wisselschema voetbal: voorbeelden voor 6 tegen 6 en 8 tegen 8",
+     "Wisselschema voetbal maken voor je jeugdteam: voorbeelden voor 6 tegen 6 en 8 tegen 8, de wisselregels bij de pupillen en tips voor eerlijke speeltijd.",
      f"""
 <section class="prose">
-  <h1>Een wisselschema maken voor je jeugdteam</h1>
-  <p class="lead">Een goed wisselschema zorgt ervoor dat elk kind ongeveer evenveel speeltijd krijgt en dat jij daar niet voor hoeft te rekenen langs de lijn. In de praktijk blijkt dat op papier toch een heel gedoe.</p>
+  <h1>Wisselschema voetbal maken voor je jeugdteam</h1>
+  <p class="lead">Een goed wisselschema voor voetbal zorgt ervoor dat elk kind ongeveer evenveel speeltijd krijgt en dat jij daar niet voor hoeft te rekenen langs de lijn. Hieronder staan voorbeelden voor 6 tegen 6 en 8 tegen 8 die je zo kunt overnemen, en de regels voor wisselen bij de pupillen.</p>
 
-  <h2>Wat maakt een papiertje lastig</h2>
+  <h2>Hoe maak je een wisselschema?</h2>
+  <ol>
+    <li><strong>Kies je wisselmomenten.</strong> Bij de pupillen heeft elke helft halverwege een time-out. Met de rust erbij heb je vier kwarten, en drie vaste momenten om te wisselen.</li>
+    <li><strong>Tel de plekken.</strong> Bij 6 tegen 6 zijn er per kwart zes plekken, keeper meegerekend. Over vier kwarten zijn dat er 24.</li>
+    <li><strong>Verdeel ze over wie er is.</strong> Met acht kinderen speelt iedereen drie kwarten. Met negen kinderen lukt dat niet precies: zes kinderen spelen drie kwarten, drie kinderen twee.</li>
+    <li><strong>Zet de keepers apart.</strong> Laat een keeper in de andere helft in het veld spelen, zodat keepen niet ten koste gaat van voetballen.</li>
+    <li><strong>Onthoud wie er minder speelde.</strong> Die kinderen beginnen de volgende wedstrijd in het veld. Zo wordt het over het seizoen eerlijk, ook als het in één wedstrijd niet precies rondkomt.</li>
+  </ol>
+
+  <h2>Wisselschema voetbal 6 tegen 6 (O8, O9 en O10)</h2>
+  <p>Bij O8 en O9 speel je 2 × 20 minuten, dus vier kwarten van tien minuten. Met acht spelers zitten er elk kwart twee kinderen aan de kant, en speelt iedereen precies 30 minuten. Daan keept de eerste helft, Milan de tweede.</p>
+  {wisselschema_tabel("Wisselschema 6 tegen 6 met 8 spelers, 2 × 20 minuten (O8 en O9)", 10, WS_6_MET_8)}
+  <p>Wisselmomenten: na 10 minuten Sven en Bram erin voor Milan en Luca. In de rust Milan (keeper) en Luca erin voor Daan en Noud. Na 30 minuten Daan en Noud erin voor Finn en Jesse.</p>
+
+  <h3>6 tegen 6 met 9 spelers</h3>
+  <p>Met negen spelers zitten er elk kwart drie kinderen aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Bram en Stijn beginnen de volgende wedstrijd daarom in het veld. Wil je het binnen de wedstrijd gelijker, wissel dan ook halverwege een kwart.</p>
+  {wisselschema_tabel("Wisselschema 6 tegen 6 met 9 spelers, 2 × 20 minuten (O8 en O9)", 10, WS_6_MET_9)}
+  <p>Bij O10 speel je 2 × 25 minuten. Het schema blijft hetzelfde, alleen duurt elk kwart 12,5 minuut.</p>
+
+  <h2>Wisselschema voetbal 8 tegen 8 (O11 en O12)</h2>
+  <p>Bij O11 en O12 speel je 2 × 30 minuten, dus vier kwarten van een kwartier. Met tien spelers zitten er elk kwart twee kinderen aan de kant. De twee keepers spelen de hele wedstrijd: een helft op doel en een helft in het veld. De andere acht spelen elk 45 minuten.</p>
+  {wisselschema_tabel("Wisselschema 8 tegen 8 met 10 spelers, 2 × 30 minuten (O11 en O12)", 15, WS_8_MET_10)}
+
+  <h2>Regels voor wisselen bij de pupillen</h2>
+  <ul>
+    <li><strong>Onbeperkt wisselen:</strong> je mag zo vaak wisselen als je wilt, en een gewisselde speler mag weer terug.</li>
+    <li><strong>Vaste momenten:</strong> de time-out halverwege elke helft en de rust zijn de handigste momenten, want dan ligt het spel toch stil.</li>
+    <li><strong>Speelduur per leeftijd:</strong> hoe lang een kwart duurt, hangt af van de leeftijd. Zie het overzicht van de <a href="/knvb-wedstrijdvormen/">KNVB-wedstrijdvormen</a>.</li>
+  </ul>
+
+  <h2>Wat maakt een wisselschema op papier lastig</h2>
   <ul>
     <li>Op vrijdagavond melden er twee kinderen af en klopt je indeling niet meer.</li>
     <li>Een blessure of een late aankomst gooit de rest van de wedstrijd om.</li>
@@ -462,6 +522,10 @@ page("/wisselschema-maken/",
 
   <h2>Hoe de Opstelling app het doet</h2>
   <p>Je vinkt aan wie er is en kiest de keepers. De app maakt daarna het schema: wie speelt welk kwart, wie wisselt wanneer, en wie staat waar. Tijdens de wedstrijd loopt de klok mee en zie je het volgende wisselmoment met de namen erbij.</p>
+  <div class="duo">
+    <figure>{telefoon("site-opstelling.webp", "Wisselschema voetbal 6 tegen 6 in de Opstelling app: kwart 1 met Daan op doel, Luca en Jesse als wissel, en halverwege Finn erin voor Stijn")}<figcaption>Het wisselschema per kwart</figcaption></figure>
+    <figure>{telefoon("site-wedstrijd.webp", "Wisselmoment tijdens de wedstrijd in de Opstelling app: Sven erin voor Jesse, met de klok en de stand erboven")}<figcaption>Een seintje bij elk wisselmoment</figcaption></figure>
+  </div>
   <p>Wijzigt er iets, dan past de app de rest van de wedstrijd aan met de al gespeelde minuten erin verwerkt. En de minuten van vandaag tellen automatisch mee bij de volgende wedstrijd, zodat wie nu minder speelde, dan voorrang krijgt.</p>
 
   <h2>Je houdt zelf de regie</h2>
@@ -615,6 +679,7 @@ page(TIPS,
 
 # ------------------------------------------------ voetbal.nl-kalender koppelen
 ag_faq = [
+    ("Hoe zet ik de wedstrijden van Voetbal.nl in mijn agenda?", "Koop in de Voetbal.nl-app de teamkalender. Je krijgt een mail met een link. Die voeg je als agenda-abonnement toe in de agenda van je telefoon, of je plakt hem in Opstelling. Daarna komen alle wedstrijden en wijzigingen vanzelf in je agenda."),
     ("Wat kost de Voetbal.nl-teamkalender?", "Voetbal.nl vraagt € 1,99 voor de teamkalender. Koppelen in Opstelling kost niets extra."),
     ("Werkt het ook zonder de teamkalender?", "Ja. Dan voeg je de wedstrijden zelf toe en kies je thuis of uit. Alles werkt verder hetzelfde."),
     ("Wat gebeurt er als de bond een wedstrijd verplaatst?", "De app haalt de wijziging op en past datum, aftrap of locatie aan. Wat je al had klaargezet, zoals aanwezigen en opstelling, blijft staan."),
@@ -623,17 +688,17 @@ ag_faq = [
     ("Kunnen medetrainers de agenda ook zien?", "Ja. De wedstrijden horen bij het team, dus iedere trainer ziet dezelfde agenda. Eén keer koppelen is genoeg."),
 ]
 page(AGENDA,
-     "Voetbal.nl-kalender koppelen: hele seizoen in één keer klaar",
-     "Zo koppel je de Voetbal.nl-kalender in 3 stappen. Alle wedstrijden van je team staan meteen klaar, en je maakt eenvoudig een overzicht voor de ouders.",
+     "Voetbal.nl agenda koppelen: hele seizoen in één keer klaar",
+     "Zo koppel je de Voetbal.nl-agenda, ook wel de Voetbal.nl-kalender, in 3 stappen. Alle wedstrijden van je team staan meteen klaar, in Opstelling of je telefoon.",
      f"""
 <section class="prose">
   {kruimelpad("Wedstrijdagenda")}
-  <h1>Je Voetbal.nl-kalender koppelen</h1>
-  <p class="lead">Zet alle wedstrijden van het seizoen in één keer klaar in Opstelling, met aftrap, tegenstander, thuis of uit en de locatie. Daarna maak je elke week eenvoudig een plaatje voor de ouders: wie er meegaat, hoe laat ze er moeten zijn, wie de shirts wast en wie fruit meeneemt.</p>
+  <h1>Je Voetbal.nl-agenda koppelen</h1>
+  <p class="lead">Zet alle wedstrijden van het seizoen in één keer in je agenda, met aftrap, tegenstander, thuis of uit en de locatie. Dat kan in de agenda van je telefoon en in Opstelling. In Opstelling maak je daarna elke week eenvoudig een plaatje voor de ouders: wie er meegaat, hoe laat ze er moeten zijn, wie de shirts wast en wie fruit meeneemt.</p>
 
   <h2>In drie stappen gekoppeld</h2>
   <ol class="stappen">
-    <li><b>Koop de teamkalender in de Voetbal.nl-app</b><span>Ga naar je team, dan Programma › Kalender. De teamkalender kost € 1,99 bij Voetbal.nl. Je krijgt een mail met een link.</span></li>
+    <li><b>Koop de teamkalender in de Voetbal.nl-app</b><span>Zet je team eerst bij je favorieten, want de kalender neemt alleen favoriete teams mee. Ga dan naar je team, en naar Programma › Kalender. De teamkalender kost € 1,99 bij Voetbal.nl. Je krijgt een mail met een link.</span></li>
     <li><b>Kopieer de link uit de mail</b><span>Het is een adres dat met webcal:// of https:// begint.</span></li>
     <li><b>Plak hem in Opstelling bij Agenda koppelen</b><span>Op het tabblad Wedstrijd of Team. Alle wedstrijden van het seizoen staan er meteen in.</span></li>
   </ol>
@@ -652,6 +717,15 @@ page(AGENDA,
     <li><strong>Verdwijnt een wedstrijd uit de agenda,</strong> dan krijgt hij een label en kies je zelf: afgelasten of verwijderen.</li>
     <li><strong>Had je hem al zelf aangemaakt?</strong> Dan vraagt de app of het dezelfde wedstrijd is en voegt ze samen.</li>
   </ul>
+
+  <h2>Voetbal.nl-wedstrijden in de agenda van je telefoon</h2>
+  <p>Met dezelfde link uit de mail zet je de wedstrijden ook in je eigen agenda. Je voegt hem toe als agenda-abonnement, zodat wijzigingen vanzelf meekomen.</p>
+  <ul>
+    <li><strong>iPhone:</strong> open Instellingen › Agenda › Accounts › Voeg account toe › Andere › Voeg agenda-abonnement toe, en plak de link.</li>
+    <li><strong>Google Agenda (Android):</strong> open Google Agenda op een computer, klik bij Andere agenda's op het plusje, kies Via URL en plak de link. Daarna staat hij ook op je telefoon.</li>
+    <li><strong>Outlook:</strong> kies Agenda toevoegen › Abonneren via internet en plak de link.</li>
+  </ul>
+  <p>De menunamen verschillen soms per versie. Een agenda-abonnement wordt niet direct bijgewerkt: het kan een paar uur duren voordat een verplaatste wedstrijd in je agenda staat.</p>
 
   <p class="opm">Opstelling is niet verbonden aan Voetbal.nl of de KNVB. De teamkalender koop je in de Voetbal.nl-app; de prijs bepaalt Voetbal.nl.</p>
 </section>

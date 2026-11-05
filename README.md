@@ -7,7 +7,7 @@ Statische marketingsite: geen eigen JavaScript, zeven pagina's, klaar voor Googl
 | Pagina | Waarop hij moet scoren |
 |---|---|
 | `/` | opstelling app jeugdvoetbal, opstelling maken, speeltijd bijhouden |
-| `/wisselschema-maken/` | wisselschema maken jeugdvoetbal, wisselschema pupillen |
+| `/wisselschema-maken/` | wisselschema voetbal, wisselschema maken, wisselschema 6 tegen 6 / 8 tegen 8, wisselregels pupillen |
 | `/speeltijd-eerlijk-verdelen/` | speeltijd eerlijk verdelen, speelminuten jeugdvoetbal |
 | `/knvb-wedstrijdvormen/` | KNVB wedstrijdvormen, speelduur O8, hoe lang duurt een wedstrijd O10 |
 | `/tips-en-tops-per-speler/` | tips en tops voetbal, spelersvolgsysteem jeugdvoetbal, voortgang spelers bijhouden |
