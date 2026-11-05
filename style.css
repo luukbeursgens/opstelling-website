@@ -220,6 +220,7 @@ table.ws .ws-w{color:var(--muted)}
   table.ws th,table.ws td{padding:8px 5px;font-size:13.5px}
   table.ws .ws-lang{display:none}
   table.ws caption{white-space:normal}
+  table.ws-breed th,table.ws-breed td{padding:7px 3px;font-size:12px}
 }
 main>section.prijzen{padding-top:8px}
 
