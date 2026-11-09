@@ -612,7 +612,7 @@ page("/speeltijd-eerlijk-verdelen/",
 
 # ------------------------------------------------ knvb wedstrijdvormen
 rows = [
-    ("O7", "4 tegen 4", "Nee", "3 × 15 minuten", "Time-out na 7,5 minuut per wedstrijdje (6 blokken)"),
+    ("O7", "4 tegen 4", "Nee", "3 × 15 minuten", "Tussen de blokjes van 7,5 minuut (6 blokjes)"),
     ("O8 en O9", "6 tegen 6", "Ja", "2 × 20 minuten", "Time-out na 10 minuten per helft (4 kwarten)"),
     ("O10", "6 tegen 6", "Ja", "2 × 25 minuten", "Time-out na 12,5 minuut per helft (4 kwarten)"),
     ("O11 en O12", "8 tegen 8", "Ja", "2 × 30 minuten", "Time-out na 15 minuten per helft (4 kwarten)"),
@@ -687,7 +687,7 @@ VORM = {
         "veld_zin": "30 bij 20 meter, met doeltjes van 3 bij 1 meter en zonder keeper. Er wordt gespeeld met een bal maat 3.",
         "naam": "4 tegen 4", "veld": "30 × 20 meter", "doel": "3 × 1 meter, zonder keeper", "bal": "Maat 3",
         "keeper": "Nee", "leiding": "Geen scheidsrechter of spelbegeleider: de begeleiders van beide teams zorgen samen voor een goed verloop",
-        "dispensatie": "Maximaal 1 speler per wedstrijd", "strafschop": "Geen, na afloop mag het in onderling overleg",
+        "dispensatie": "Maximaal 1 speler per wedstrijd", "strafschop": "Niet tijdens de wedstrijd; na afloop vanaf 7 meter, in onderling overleg",
         "standen": "Geen standen en uitslagen gepubliceerd",
         "regels": [
             ("Aftrap", "in het midden van het veld, met een dribbel of een pass. Beide teams starten op eigen helft."),
