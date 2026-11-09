@@ -94,6 +94,8 @@ Op een pull request draaien dezelfde controles, maar wordt er niet gepubliceerd.
 
 De site gaat altijd naar het echte adres. Zolang `PUBLIEK = False` in `build.py` staat, weren robots.txt en elke pagina zoekmachines: wie het adres kent kan kijken, maar Google neemt de site niet op. Zet `PUBLIEK = True` zodra de site gevonden mag worden.
 
+Na het publiceren meldt `indexnow.py` de gewijzigde pagina's aan Bing (IndexNow). Daardoor staan ze sneller in Bing en ChatGPT-zoeken. De sleutel staat als `INDEXNOW_SLEUTEL` in `build.py` en als `<sleutel>.txt` op de site. Lukt de melding niet, dan blijft de site gewoon online.
+
 Opnieuw publiceren zonder wijziging: GitHub > Actions > Controleren en publiceren > Run workflow.
 
 ### Eenmalig instellen

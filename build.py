@@ -45,6 +45,11 @@ BETAALD_VANAF = {1: "tweede", 2: "derde", 3: "vierde", 4: "vijfde"}.get(GRATIS, 
 # Leeg laten = geen analytics. Cloudflare telt bezoeken zonder cookies.
 CF_TOKEN = "622bc38b1c73451abece02918dc7e2ea"
 
+# IndexNow: hiermee meldt de publicatiestap gewijzigde pagina's meteen aan Bing (en
+# daarmee ook aan ChatGPT-zoeken), zie indexnow.py. De sleutel is openbaar bedoeld:
+# hij staat als <sleutel>.txt op de site, zodat Bing ziet dat de melding van ons komt.
+INDEXNOW_SLEUTEL = "5f27039d2d4b77adb817cc285153f710"
+
 
 # Versienummer van de stijl: verandert style.css, dan verandert het adres, en
 # halen browsers meteen de nieuwe versie op in plaats van een oude uit hun geheugen.
@@ -1146,6 +1151,7 @@ urls = "".join(
 (OUT / "sitemap.xml").write_text(
     f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',
     encoding="utf-8")
+(OUT / f"{INDEXNOW_SLEUTEL}.txt").write_text(INDEXNOW_SLEUTEL, encoding="utf-8")
 if PUBLIEK:
     (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\n\nSitemap: {}/sitemap.xml\n".format(SITE), encoding="utf-8")
 else:

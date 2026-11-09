@@ -407,3 +407,14 @@ test('prijzen kloppen met de app: gratis wedstrijd alleen voor je eerste team, s
   expect(llms).toContain('31 juli');
   expect(llms).not.toMatch(fout);
 });
+
+test('IndexNow: sleutel staat op de site en alleen gewijzigde pagina\'s uit de sitemap worden gemeld', async ({ page }) => {
+  const sleutel = BUILD.match(/^INDEXNOW_SLEUTEL = "([0-9a-f]{32})"/m)[1];
+  const antwoord = await page.request.get(`/${sleutel}.txt`);
+  expect(antwoord.status()).toBe(200);
+  expect((await antwoord.text()).trim()).toBe(sleutel);
+  const { execFileSync } = await import('child_process');
+  const gemeld = execFileSync('python3', ['indexnow.py', '--proef', 'jo9/index.html', 'bedankt/index.html', 'style.css', 'index.html', 'jo9/index.html'],
+    { encoding: 'utf8' }).trim().split('\n');
+  expect(gemeld).toEqual([SITE + '/jo9/', SITE + '/']);   // geen bedankpagina, geen stijl, niets dubbel
+});

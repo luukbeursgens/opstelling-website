@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # hele geschiedenis, zodat indexnow.py ziet welke pagina's veranderd zijn
 
       - uses: actions/setup-python@v5
         with:
@@ -55,7 +57,7 @@ jobs:
         run: |
           rm -rf _publiceren && mkdir _publiceren
           git ls-files \
-            | grep -Ev '^(\.|tests/|build\.py$|package(-lock)?\.json$|playwright\.config\.js$|README\.md$|netlify\.toml$|__pycache__/|opstelling-website/)' \
+            | grep -Ev '^(\.|tests/|build\.py$|indexnow\.py$|package(-lock)?\.json$|playwright\.config\.js$|README\.md$|netlify\.toml$|__pycache__/|opstelling-website/)' \
             | while read -r f; do mkdir -p "_publiceren/$(dirname "$f")"; cp "$f" "_publiceren/$f"; done
           echo "Dit gaat online:"; find _publiceren -type f | sort
 
@@ -79,3 +81,16 @@ jobs:
             echo "PUBLIEK staat uit: de site staat online, maar zoekmachines worden geweerd."
           fi
           npx --yes netlify-cli@27.10.1 deploy --prod --no-build --dir _publiceren --timeout 480 --message "$COMMIT_BERICHT"
+
+      # Gewijzigde pagina's meteen melden aan Bing (IndexNow), zodat ze daar en in
+      # ChatGPT-zoeken sneller verschijnen. Faalt de melding, dan staat de site gewoon online.
+      - name: Gewijzigde pagina's melden aan Bing
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          VORIGE: ${{ github.event.before }}
+        run: |
+          if grep -q "^PUBLIEK = True" build.py; then
+            python3 indexnow.py "$VORIGE" "$GITHUB_SHA"
+          else
+            echo "PUBLIEK staat uit: niets gemeld."
+          fi
