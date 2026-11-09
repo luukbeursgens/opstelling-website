@@ -30,6 +30,7 @@ PAGINA_INFO = []
 PUBLIEK = True         # False zolang de site nog niet openbaar mag zijn: geen zoekmachines
 PRIJS = "29,99"         # per team, per seizoen, één keer vooraf betalen
 PRIJS_LD = "29.99"
+SEIZOEN = "2026/'27"   # huidig KNVB-seizoen, staat in de titels van de leeftijdspagina's
 SEIZOEN_TOT = "31 juli"   # een seizoen loopt tot en met deze datum      # dezelfde prijs met een punt, voor de gegevens voor zoekmachines
 GRATIS = 1              # aantal gratis wedstrijden per team
 # Zinnen over de gratis wedstrijd(en), in enkelvoud of meervoud, zodat ze kloppen als GRATIS verandert
@@ -436,6 +437,7 @@ page("/",
 </section>
 
 {gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/", titel="Handig voor elke jeugdtrainer")}
+<section class="prose"><p class="leeftijden">Spelregels en speeltijd per leeftijd: <a href="/jo6/">JO6</a> · <a href="/jo7/">JO7</a> · <a href="/jo8/">JO8</a> · <a href="/jo9/">JO9</a> · <a href="/jo10/">JO10</a> · <a href="/jo11/">JO11</a> · <a href="/jo12/">JO12</a></p></section>
 
 {faq_html(home_faq, open_eerste=True)}
 {cta("Probeer het zaterdag met je eigen team", f"{GRATIS_ZIN}. Geen installatie, geen wachtwoord.")}
@@ -753,32 +755,32 @@ AANTALLEN = {4: [5, 6, 7, 8], 6: [7, 8, 9, 10, 11, 12], 8: [9, 10, 11, 12, 13, 1
 
 # Per leeftijd: geboortejaar in 2026/'27, wedstrijdvorm, minuten per helft, en een eigen inleiding en voorbeeld
 LEEFTIJDEN = [
-    {"o": 7, "geboren": 2020, "vorm": 4, "titel": "JO7 voetbal: spelregels 4 tegen 4, speeltijd en wisselschema",
+    {"o": 7, "geboren": 2020, "vorm": 4, "titel": f"Spelregels JO7 {SEIZOEN}: 4 tegen 4, speeltijd en wisselschema",
      "beschrijving": "Alles over JO7 (O7): spelregels van 4 tegen 4 zonder keeper, hoe lang de wedstrijdjes duren, het veld, de superspeler en een eerlijk wisselschema.",
      "inleiding": "Bij JO7, sinds dit seizoen officieel O7 (Onder 7), maken kinderen kennis met echte wedstrijdjes. Ze spelen 4 tegen 4 zonder keeper op een klein veld, zodat iedereen veel aan de bal komt en veel scoort.",
      "schema": (WS_4_MET_6, 7.5, "Wisselschema JO7, 4 tegen 4 met 6 spelers, 6 blokjes van 7,5 minuut", "Met zes kinderen staan er elk blokje twee aan de kant, steeds een ander tweetal. Zo speelt iedereen 30 van de 45 minuten."),
      "extra": "<h2>Na JO7</h2>\n  <p>Vanaf O8 speel je 6 tegen 6 op een groter veld, en voor het eerst met een keeper. Zie <a href=\"/jo8/\">JO8</a>.</p>"},
-    {"o": 8, "geboren": 2019, "vorm": 6, "helft": 20, "titel": "JO8 voetbal: spelregels, speeltijd, opstelling en wisselschema",
+    {"o": 8, "geboren": 2019, "vorm": 6, "helft": 20, "titel": f"Spelregels JO8 {SEIZOEN}: speeltijd, veld en wisselschema",
      "beschrijving": "Alles over JO8 (O8): de overstap naar 6 tegen 6 met keeper, spelregels, hoe lang een wedstrijd duurt, het veld, een opstelling en een eerlijk wisselschema.",
      "inleiding": "Bij JO8, sinds dit seizoen officieel O8 (Onder 8), gaan kinderen van 4 tegen 4 naar 6 tegen 6. Voor het eerst staat er een keeper in het doel en is het veld een stuk groter.",
      "schema": (WS_6_MET_9, None, "Wisselschema JO8, 6 tegen 6 met 9 spelers, 2 × 20 minuten", "Met negen kinderen staan er elk kwart drie aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Bram en Stijn beginnen de volgende wedstrijd daarom in het veld."),
      "extra": "<h2>Voor het eerst een keeper</h2>\n  <p>Bij JO8 wil bijna elk kind wel eens op doel staan, of juist helemaal niet. Laat de keepers rouleren, bijvoorbeeld één keeper per helft. Zo leert iedereen het een keer, en voetbalt een keeper in de andere helft gewoon mee in het veld.</p>"},
-    {"o": 9, "geboren": 2018, "vorm": 6, "helft": 20, "titel": "JO9 voetbal: spelregels, speeltijd, opstelling en wisselschema",
+    {"o": 9, "geboren": 2018, "vorm": 6, "helft": 20, "titel": f"Spelregels JO9 {SEIZOEN}: speeltijd, veld en wisselschema",
      "beschrijving": "Alles over JO9 (O9): spelregels, hoe lang een wedstrijd duurt, hoeveel spelers, het veld, een opstelling voor 6 tegen 6 en een eerlijk wisselschema.",
      "inleiding": "Bij JO9, sinds dit seizoen officieel O9 (Onder 9), spelen kinderen 6 tegen 6 op een kwart veld. Op deze pagina staat alles wat je als trainer of ouder wilt weten: de spelregels, hoe lang een wedstrijd duurt, een opstelling en een wisselschema waarmee iedereen eerlijk speelt.",
      "schema": (WS_6_MET_8, None, "Wisselschema JO9, 6 tegen 6 met 8 spelers, 2 × 20 minuten", "Met acht kinderen staan er elk kwart twee aan de kant, en speelt iedereen precies 30 minuten. Daan keept de eerste helft, Milan de tweede."),
      "extra": ""},
-    {"o": 10, "geboren": 2017, "vorm": 6, "helft": 25, "titel": "JO10 voetbal: spelregels, speeltijd, opstelling, wisselschema",
+    {"o": 10, "geboren": 2017, "vorm": 6, "helft": 25, "titel": f"Spelregels JO10 {SEIZOEN}: speeltijd, veld en wisselschema",
      "beschrijving": "Alles over JO10 (O10): spelregels van 6 tegen 6, hoe lang een wedstrijd duurt (2 × 25 minuten), het veld, een opstelling en een eerlijk wisselschema.",
      "inleiding": "Bij JO10, sinds dit seizoen officieel O10 (Onder 10), spelen kinderen hun laatste jaar 6 tegen 6. De regels zijn hetzelfde als bij JO8 en JO9, maar de helften duren vijf minuten langer.",
      "schema": (WS_6_MET_8, None, "Wisselschema JO10, 6 tegen 6 met 8 spelers, 2 × 25 minuten", "Met acht kinderen staan er elk kwart twee aan de kant, en speelt iedereen precies 37,5 minuut. Daan keept de eerste helft, Milan de tweede."),
      "extra": "<h2>Na JO10</h2>\n  <p>Vanaf O11 speel je 8 tegen 8 op bijna een half veld, met een pupillenscheidsrechter en standen. Laat kinderen in het laatste jaar 6 tegen 6 daarom al eens op verschillende plekken spelen. Zie <a href=\"/jo11/\">JO11</a>.</p>"},
-    {"o": 11, "geboren": 2016, "vorm": 8, "helft": 30, "titel": "JO11 voetbal: spelregels 8 tegen 8, speeltijd en opstelling",
+    {"o": 11, "geboren": 2016, "vorm": 8, "helft": 30, "titel": f"Spelregels JO11 {SEIZOEN}: 8 tegen 8, speeltijd en spelers",
      "beschrijving": "Alles over JO11 (O11 en MO11): spelregels van 8 tegen 8, hoe lang een wedstrijd duurt, het veld, standen, een opstelling en een wisselschema.",
      "inleiding": "Bij JO11, sinds dit seizoen officieel O11 (Onder 11), gaan kinderen van 6 tegen 6 naar 8 tegen 8 op bijna een half veld. Er fluit een pupillenscheidsrechter, en voor het eerst publiceert de KNVB uitslagen en standen. Meidenteams heten MO11 en spelen met dezelfde regels.",
      "schema": (WS_8_MET_10, None, "Wisselschema JO11, 8 tegen 8 met 10 spelers, 2 × 30 minuten", "Met tien spelers staan er elk kwart twee aan de kant. De twee keepers spelen de hele wedstrijd: een helft op doel en een helft in het veld. De andere acht spelen elk 45 minuten."),
      "extra": PRESTATIEF},
-    {"o": 12, "geboren": 2015, "vorm": 8, "helft": 30, "titel": "JO12 voetbal: spelregels 8 tegen 8, opstelling en wisselschema",
+    {"o": 12, "geboren": 2015, "vorm": 8, "helft": 30, "titel": f"Spelregels JO12 {SEIZOEN}: 8 tegen 8, speeltijd en opstelling",
      "beschrijving": "Alles over JO12 (O12): spelregels van 8 tegen 8, hoe lang een wedstrijd duurt, het veld, standen, een opstelling en een wisselschema met 11 spelers.",
      "inleiding": "Bij JO12, sinds dit seizoen officieel O12 (Onder 12), spelen kinderen hun tweede en laatste jaar 8 tegen 8. Daarna gaan ze naar een groter veld en meer spelers.",
      "schema": (WS_8_MET_11, None, "Wisselschema JO12, 8 tegen 8 met 11 spelers, 2 × 30 minuten", "Met elf spelers staan er elk kwart drie aan de kant. Tien spelers spelen 45 minuten. Luca speelt deze keer een kwart minder en begint de volgende wedstrijd in het veld."),
@@ -812,6 +814,20 @@ def leeftijd_faq(l, v):
         (f"Welk geboortejaar speelt in {jo}?", f"In seizoen 2026/'27 spelen kinderen die in {l['geboren']} geboren zijn in O{l['o']}."),
         (f"Wat is het verschil tussen {jo} en O{l['o']}?", f"Er is geen verschil. Sinds seizoen 2026/'27 heet {jo} bij de KNVB officieel O{l['o']} (Onder {l['o']}). Veel clubs en ouders zeggen nog {jo}."),
     ]
+
+
+def kort_antwoord(l, v):
+    """Eén alinea met de kern, bovenaan de pagina: Google neemt zulke zinnen graag over in zijn antwoord."""
+    jo, veld = f"JO{l['o']}", v["veld"].split(" (")[0]
+    if l["vorm"] == 4:
+        kern = (f"{jo} speelt 4 tegen 4 zonder keeper: drie wedstrijdjes van 15 minuten op een veld van {veld}, "
+                "met doeltjes van 3 × 1 meter. Er is geen scheidsrechter, geen buitenspel en geen stand.")
+    else:
+        leiding = ("Een spelbegeleider staat langs het veld" if l["vorm"] == 6 else "Een pupillenscheidsrechter leidt de wedstrijd")
+        standen = ("de KNVB publiceert geen standen" if l["vorm"] == 6 else "de KNVB publiceert uitslagen en standen")
+        kern = (f"{jo} speelt {v['naam']} met keeper, 2 × {l['helft']} minuten met een time-out halverwege elke helft, "
+                f"op een veld van {veld} met een bal {v['bal'][0].lower()}{v['bal'][1:]}. {leiding}, er is geen buitenspel en {standen}.")
+    return f'<p class="kort-antwoord"><strong>In het kort:</strong> {kern}</p>'
 
 
 def leeftijd_navigatie(o):
@@ -850,6 +866,7 @@ for l in LEEFTIJDEN:
   {kruimelpad(jo)}
   <h1>{jo}: spelregels, speeltijd en opstelling</h1>
   <p class="lead">{l['inleiding']}</p>
+  {kort_antwoord(l, v)}
 
   <h2>{jo} in het kort</h2>
   {in_het_kort(kort, f"{jo} (O{l['o']}) in het kort, seizoen 2026/'27")}
@@ -893,13 +910,14 @@ o6_faq = [
     ("Wat is het verschil tussen JO6 en O6?", "Er is geen verschil. Sinds seizoen 2026/'27 heet JO6 bij de KNVB officieel O6 (Onder 6)."),
 ]
 page("/jo6/",
-     "JO6 voetbal (O6): 2 tegen 2, toernooitjes en spelregels",
+     f"JO6 voetbal {SEIZOEN}: 2 tegen 2, toernooitjes en spelregels",
      "Alles over JO6 (O6), de jongste voetballers van 4 en 5 jaar: waarom de KNVB 2 tegen 2 adviseert, hoe de toernooitjes werken en wat er daarna komt bij JO7.",
      f"""
 <section class="prose">
   {kruimelpad("JO6")}
   <h1>JO6: de eerste wedstrijdjes</h1>
   <p class="lead">Bij JO6, sinds dit seizoen officieel O6 (Onder 6), maken kinderen van 4 en 5 jaar voor het eerst kennis met voetbal. Jongens en meiden spelen vaak samen. Plezier staat voorop, en voetbal leren ze spelenderwijs.</p>
+  <p class="kort-antwoord"><strong>In het kort:</strong> JO6 speelt geen competitie. De KNVB adviseert 2 tegen 2 in toernooitjes, op de eigen club of met clubs uit de buurt. 4 tegen 4 mag ook, met dezelfde regels als bij JO7.</p>
 
   <h2>2 tegen 2</h2>
   <p>De KNVB adviseert om bij O6 2 tegen 2 te spelen. Zo komt elk kind veel aan de bal, scoort het veel en blijft het betrokken bij het spel. 4 tegen 4 mag ook. De spelregels van 2 tegen 2 zijn dezelfde als die van 4 tegen 4 bij <a href="/jo7/">JO7</a>.</p>

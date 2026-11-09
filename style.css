@@ -203,6 +203,8 @@ main>section.prose:first-child{padding-top:64px}
 .prose h2{font-size:clamp(26px,3.4vw,34px);margin:44px 0 12px}
 .prose p{margin-bottom:14px}
 .prose .lead{margin:18px 0 8px}
+/* Kern van een leeftijdspagina in één alinea, bovenaan */
+.prose .kort-antwoord{background:var(--grass-soft);border-radius:14px;padding:14px 18px;margin:18px 0 8px}
 .prose ul{padding-left:22px;margin:0 0 14px}
 .prose li{margin-bottom:8px}
 .prose li::marker{color:var(--grass)}
