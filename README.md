@@ -11,6 +11,7 @@ Statische marketingsite: geen eigen JavaScript, zeven pagina's, klaar voor Googl
 | `/speeltijd-eerlijk-verdelen/` | speeltijd eerlijk verdelen, speelminuten jeugdvoetbal |
 | `/knvb-wedstrijdvormen/` | KNVB wedstrijdvormen, speelduur O8, hoe lang duurt een wedstrijd O10 |
 | `/jo6/` t/m `/jo12/` | per leeftijd: spelregels, speeltijd, hoeveel spelers, veldgrootte, opstelling en wisselschema (bijv. "spelregels jo9"). Gemaakt uit `VORM` en `LEEFTIJDEN` in `build.py`; bron: KNVB-infographics 2026/'27 |
+| `/opstelling-6-tegen-6/` | opstelling 6 tegen 6, formatie 6 tegen 6, opstelling jo8/jo9/jo10. Tekeningen uit `veldtekening.py` (zelfde plekken als de app) |
 | `/tips-en-tops-per-speler/` | tips en tops voetbal, spelersvolgsysteem jeugdvoetbal, voortgang spelers bijhouden |
 | `/voetbal-nl-kalender-koppelen/` | voetbal.nl kalender, voetbal.nl agenda koppelen, verzameltijd, wasschema voetbal |
 | `/contact/` | (contactformulier; berichten naar info@opstellingapp.nl) |

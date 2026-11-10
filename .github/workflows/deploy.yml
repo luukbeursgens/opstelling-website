@@ -57,7 +57,7 @@ jobs:
         run: |
           rm -rf _publiceren && mkdir _publiceren
           git ls-files \
-            | grep -Ev '^(\.|tests/|build\.py$|indexnow\.py$|package(-lock)?\.json$|playwright\.config\.js$|README\.md$|netlify\.toml$|__pycache__/|opstelling-website/)' \
+            | grep -Ev '^(\.|tests/|build\.py$|indexnow\.py$|veldtekening\.py$|package(-lock)?\.json$|playwright\.config\.js$|README\.md$|netlify\.toml$|__pycache__/|opstelling-website/)' \
             | while read -r f; do mkdir -p "_publiceren/$(dirname "$f")"; cp "$f" "_publiceren/$f"; done
           echo "Dit gaat online:"; find _publiceren -type f | sort
 

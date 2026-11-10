@@ -888,7 +888,7 @@ for l in LEEFTIJDEN:
   <h2>Opstelling bij {jo}</h2>
   <p>Twee opstellingen die goed werken bij {v['naam']}:</p>
   <ul>{opstellingen}</ul>
-  <p>Laat kinderen bij de pupillen vooral veel aan de bal komen en verschillende plekken leren kennen. In de app kies je de opstelling die bij je team past.</p>
+  <p>Laat kinderen bij de pupillen vooral veel aan de bal komen en verschillende plekken leren kennen. In de app kies je de opstelling die bij je team past.{' Alle vijf opstellingen met een tekening staan bij <a href="/opstelling-6-tegen-6/">opstelling 6 tegen 6</a>.' if plekken == 6 else ''}</p>
   {l['extra']}
 
   <h2>Wat doen trainers en ouders?</h2>
@@ -935,6 +935,112 @@ page("/jo6/",
 
 {gidsen("/knvb-wedstrijdvormen/", "/speeltijd-eerlijk-verdelen/", "/wisselschema-maken/")}
 """, extra_ld=faq_ld(o6_faq), kruimel="JO6")
+
+# ------------------------------------------------ opstelling 6 tegen 6
+# Zoekvraag "opstelling 6 tegen 6": bovenaan staan nu vooral PDF'jes en losse oefeningen.
+# De formaties zijn dezelfde als die je in de app kunt kiezen (FORMATIONS[6] in js/rules.js).
+import veldtekening
+
+FORMATIES_6 = [
+    {"app": "2-1-2", "naam": "1-2-1-2", "bijnaam": "de ruit",
+     "wat": "Twee verdedigers, één middenvelder en twee aanvallers. De spelers staan als een ruit rond de middenvelder, zodat er overal driehoekjes zijn om de bal rond te spelen.",
+     "sterk": "Evenwichtig: twee spelers achter, twee voor, en de middenvelder verbindt ze. Iedereen heeft een medespeler dichtbij om naar te passen.",
+     "let_op": "De middenvelder heeft het druk, met verdedigen én aanvallen. Wissel die plek vaak, zodat het niet steeds hetzelfde kind is.",
+     "past": "Een goede standaard voor elk team. Met deze opstelling begint ook de app."},
+    {"app": "2-2-1", "naam": "1-2-2-1", "bijnaam": "met één spits",
+     "wat": "Twee verdedigers, twee middenvelders en één spits.",
+     "sterk": "Veel spelers in het midden, dus de tegenstander komt er minder makkelijk door. De twee middenvelders kunnen de zijkanten opzoeken.",
+     "let_op": "De spits staat vaak alleen. De middenvelders moeten meekomen om kansen te maken.",
+     "past": "Tegen een sterkere tegenstander, of als je team nog moeite heeft met verdedigen."},
+    {"app": "1-2-2", "naam": "1-1-2-2", "bijnaam": "aanvallend",
+     "wat": "Eén verdediger, twee middenvelders en twee aanvallers.",
+     "sterk": "Veel spelers voorin, dus veel kansen om te scoren.",
+     "let_op": "Achterin staan alleen de verdediger en de keeper. Bij balverlies moeten de middenvelders snel terug.",
+     "past": "Tegen een zwakkere tegenstander, of als je juist het aanvallen wilt oefenen."},
+    {"app": "1-3-1", "naam": "1-1-3-1", "bijnaam": "met een vol middenveld",
+     "wat": "Eén verdediger, drie middenvelders en één spits.",
+     "sterk": "Er staat iemand links, rechts en in het midden van het veld. Zo leren kinderen de hele breedte van het veld te gebruiken.",
+     "let_op": "De middenvelders aan de zijkant moeten veel lopen, want ze helpen zowel voor als achter.",
+     "past": "Teams die al wat samenspelen en de breedte willen leren gebruiken."},
+    {"app": "3-1-1", "naam": "1-3-1-1", "bijnaam": "verdedigend",
+     "wat": "Drie verdedigers, één middenvelder en één spits.",
+     "sterk": "Stevig achterin, met een verdediger links, rechts en in het midden.",
+     "let_op": "Met weinig spelers voorin is scoren lastig. Laat de verdedigers ook eens meegaan naar voren.",
+     "past": "Tegen een veel sterkere tegenstander, als het even tegenzit."},
+]
+
+
+def formatie_blok(f, nummer):
+    """Tekening plus uitleg van één formatie. De tekening wordt een losse afbeelding, zodat Google Afbeeldingen hem vindt."""
+    bestand = f"opstelling-6-tegen-6-{f['naam']}.svg"
+    svg = veldtekening.veld_svg(f["app"], f"Opstelling 6 tegen 6 in {f['naam']}, {f['bijnaam']}")
+    (OUT / "img" / bestand).write_text(svg, encoding="utf-8")
+    versie = hashlib.sha256(svg.encode()).hexdigest()[:10]
+    return f"""<div class="formatie" id="f{nummer}">
+    <figure><img src="/img/{bestand}?v={versie}" width="300" height="425" loading="lazy"
+      alt="Opstelling 6 tegen 6 in {f['naam']} ({f['bijnaam']}): {f['wat'][0].lower()}{f['wat'][1:-1]}, met de keeper in het doel"></figure>
+    <div>
+      <h3>{nummer}. {f['naam']}, {f['bijnaam']}</h3>
+      <p>{f['wat']}</p>
+      <ul>
+        <li><strong>Sterk:</strong> {f['sterk']}</li>
+        <li><strong>Let op:</strong> {f['let_op']}</li>
+        <li><strong>Past bij:</strong> {f['past']}</li>
+      </ul>
+    </div>
+  </div>"""
+
+
+op6_faq = [
+    ("Wat is de beste opstelling bij 6 tegen 6?", "Een goede standaard is 1-2-1-2, de ruit: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Die is evenwichtig en geeft elk kind een medespeler dichtbij. Tegen een sterkere tegenstander kun je kiezen voor 1-2-2-1, met één spits."),
+    ("Wat betekenen de cijfers, zoals 1-2-1-2?", "Je telt van achter naar voren: eerst de keeper, dan de verdedigers, de middenvelders en de aanvallers. 1-2-1-2 is dus een keeper, twee verdedigers, één middenvelder en twee aanvallers. Samen zijn dat de zes spelers op het veld."),
+    ("Moet je bij JO8 al een vaste opstelling hebben?", "Dat hoeft niet. Bij de jongste kinderen is het genoeg dat ze weten of ze voor of achter staan. Een vaste opstelling helpt vooral om het veld goed te verdelen, zodat niet iedereen achter de bal aan rent."),
+    ("Moet een kind steeds op dezelfde plek spelen?", "Liever niet. Kinderen worden betere voetballers als ze verschillende plekken leren kennen. Laat ze per wedstrijd of per kwart van plek wisselen, en laat iedereen eens keepen."),
+    ("Kan ik de opstelling in de app kiezen?", "Ja. In Opstelling kies je bij 6 tegen 6 uit deze vijf opstellingen. De app zet de kinderen op hun plek en maakt er een wisselschema bij, met eerlijke speeltijd voor iedereen."),
+]
+afbeeldingen_6 = "\n  ".join(formatie_blok(f, i + 1) for i, f in enumerate(FORMATIES_6))
+page("/opstelling-6-tegen-6/",
+     "Opstelling 6 tegen 6: 5 formaties met posities en tips",
+     "Opstelling 6 tegen 6 voor JO8, JO9 en JO10: vijf formaties met een tekening, wat elke positie doet, de voor- en nadelen, en tips voor het kiezen.",
+     f"""
+<section class="prose">
+  {kruimelpad("Opstelling 6 tegen 6")}
+  <h1>Opstelling 6 tegen 6</h1>
+  <p class="lead">Bij JO8, JO9 en JO10 speel je 6 tegen 6: een keeper en vijf veldspelers. Hier vind je vijf opstellingen met een tekening, wat elke positie doet, en wanneer je welke kiest.</p>
+  <p class="kort-antwoord"><strong>In het kort:</strong> een goede standaard bij 6 tegen 6 is 1-2-1-2, de ruit: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Tegen een sterkere tegenstander kies je 1-2-2-1, met één spits en meer spelers in het midden.</p>
+
+  <h2>Zo lees je een opstelling</h2>
+  <p>Je telt van achter naar voren. Het eerste cijfer is de keeper, daarna komen de verdedigers, de middenvelders en de aanvallers. 1-2-1-2 betekent dus: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Bij 6 tegen 6 tellen de cijfers samen altijd op tot zes.</p>
+
+  <h2>Vijf opstellingen voor 6 tegen 6</h2>
+  {afbeeldingen_6}
+
+  <h2>Wat doet elke positie?</h2>
+  <ul>
+    <li><strong>Keeper:</strong> houdt de bal uit het doel en begint de aanval. Bij 6 tegen 6 mag de keeper de bal in de handen hebben tot 7 meter van de achterlijn, de stippellijn in de tekeningen.</li>
+    <li><strong>Verdedigers:</strong> houden de aanvallers van de tegenstander tegen en spelen de bal naar voren. Bij balbezit mogen ze best mee naar voren.</li>
+    <li><strong>Middenvelders:</strong> verbinden de verdediging met de aanval. Ze helpen achterin en zoeken voorin de aanvallers op.</li>
+    <li><strong>Aanvallers:</strong> proberen te scoren en zetten de tegenstander onder druk als die de bal heeft.</li>
+  </ul>
+
+  <h2>Tips voor het kiezen</h2>
+  <ul>
+    <li><strong>Begin eenvoudig.</strong> Speel eerst een tijd met 1-2-1-2, zodat de kinderen hun plek leren kennen. Wissel pas van opstelling als het team dat aankan.</li>
+    <li><strong>Laat kinderen van plek wisselen.</strong> Wie altijd verdedigt, leert niet aanvallen. Wissel bijvoorbeeld per kwart van positie.</li>
+    <li><strong>Laat de keepers rouleren.</strong> Bijvoorbeeld één keeper per helft. Een keeper speelt in de andere helft gewoon in het veld.</li>
+    <li><strong>Denk ook aan de wissels.</strong> Een opstelling en een wisselschema horen bij elkaar. Voorbeelden staan bij <a href="/wisselschema-maken/">wisselschema maken</a>.</li>
+  </ul>
+  <div class="duo">
+    <figure>{telefoon("site-opstelling.webp", "Opstelling 6 tegen 6 in 1-2-1-2 in de Opstelling app: keeper Daan, twee verdedigers, een middenvelder en twee aanvallers, met de wissels eronder")}<figcaption>De opstelling per kwart in de app</figcaption></figure>
+  </div>
+  <p>Alles over de regels van 6 tegen 6 per leeftijd: <a href="/jo8/">JO8</a>, <a href="/jo9/">JO9</a> en <a href="/jo10/">JO10</a>.</p>
+</section>
+
+{faq_html(op6_faq)}
+{cta("Laat de app de opstelling maken", f"Kies de opstelling, vink aan wie er is, en Opstelling zet iedereen op zijn plek met een eerlijk wisselschema erbij. {GRATIS_ZIN}.")}
+
+{gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/")}
+""", extra_ld=faq_ld(op6_faq), kruimel="Opstelling 6 tegen 6")
 
 # ------------------------------------------------ tips en tops per speler
 VAARDIGHEDEN_BAL = ["Passen over de grond", "Passen door de lucht", "Schieten op doel", "Aannemen in stilstand",

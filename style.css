@@ -314,3 +314,10 @@ main>section.contact{max-width:var(--wrap);padding-top:8px;display:grid;grid-tem
 /* lange Nederlandse woorden (wedstrijdvormen, Voetbal.nl-kalender) passen ook op smalle telefoons */
 h1,h2,h3{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
 @media (max-width:380px){.prose h1{font-size:34px}.hero h1{font-size:40px}}
+
+/* Opstellingspagina: tekening van een formatie naast de uitleg */
+.formatie{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:24px;align-items:start;margin:28px 0}
+.formatie figure{margin:0}
+.formatie img{width:100%;height:auto;display:block;border-radius:14px}
+.formatie h3{margin-top:0}
+@media (max-width:560px){.formatie{grid-template-columns:minmax(0,1fr)}.formatie figure{max-width:240px}}
