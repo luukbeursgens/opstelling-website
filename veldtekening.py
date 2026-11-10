@@ -6,7 +6,14 @@ vaste hoogtes, en per linie gelijk over de breedte verdeeld.
 """
 
 NAMEN = ["Daan", "Milan", "Noud", "Luca", "Finn", "Jesse", "Sven", "Bram", "Stijn"]
-VELD_BREEDTE, VELD_LENGTE = 300, 425   # verhouding van een 6 tegen 6-veld: 30 × 42,5 meter
+VELD_BREEDTE = 300   # pixels; de lengte volgt uit de echte maten van het veld
+# Per wedstrijdvorm de maten volgens de KNVB, in meters: breedte, lengte, keepersgebied vanaf de achterlijn
+VELD_MATEN = {6: (30, 42.5, 7), 8: (42.5, 64, 16)}
+
+
+def veld_lengte(spelvorm):
+    breedte, lengte, _ = VELD_MATEN[spelvorm]
+    return round(VELD_BREEDTE * lengte / breedte)
 
 
 def linies(formatie):
@@ -39,13 +46,14 @@ def speler(x, y, naam, keeper=False):
             f'<text x="{x:.1f}" y="{y + 6:.1f}" text-anchor="middle" font-size="17" font-weight="700" fill="#16202B">{naam}</text>')
 
 
-def veld_svg(formatie, titel):
-    """Een volledige SVG van een 6 tegen 6-veld met keeper en de formatie."""
-    b, h = VELD_BREEDTE, VELD_LENGTE
+def veld_svg(formatie, titel, spelvorm=6):
+    """Een volledige SVG van een 6 tegen 6- of 8 tegen 8-veld met keeper en de formatie."""
+    meter_breed, meter_lang, meter_keepersgebied = VELD_MATEN[spelvorm]
+    b, h = VELD_BREEDTE, veld_lengte(spelvorm)
     banen = "".join(f'<rect x="0" y="{i * h / 10:.1f}" width="{b}" height="{h / 10:.1f}" fill="{"#2F7A4B" if i % 2 else "#2B7045"}"/>' for i in range(10))
     lijn = 'fill="none" stroke="#E8F2EA" stroke-width="2.5"'
-    keepersgebied = h * 7 / 42.5   # 7 meter van de achterlijn
-    doel = b * 5 / 30              # doel van 5 meter breed
+    keepersgebied = h * meter_keepersgebied / meter_lang
+    doel = b * 5 / meter_breed     # pupillendoel van 5 meter breed
     lijnen = (f'<rect x="10" y="10" width="{b - 20}" height="{h - 20}" {lijn}/>'
               f'<line x1="10" y1="{h / 2}" x2="{b - 10}" y2="{h / 2}" {lijn}/>'
               f'<circle cx="{b / 2}" cy="{h / 2}" r="34" {lijn}/>'
