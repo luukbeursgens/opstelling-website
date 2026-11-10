@@ -610,77 +610,6 @@ page("/speeltijd-eerlijk-verdelen/",
 {gidsen("/wisselschema-maken/", TIPS, "/prijzen/")}
 """, extra_ld=faq_ld(st_faq))
 
-# ------------------------------------------------ knvb wedstrijdvormen
-rows = [
-    ("O7", "4 tegen 4", "Nee", "3 × 15 minuten", "Tussen de blokjes van 7,5 minuut (6 blokjes)"),
-    ("O8 en O9", "6 tegen 6", "Ja", "2 × 20 minuten", "Time-out na 10 minuten per helft (4 kwarten)"),
-    ("O10", "6 tegen 6", "Ja", "2 × 25 minuten", "Time-out na 12,5 minuut per helft (4 kwarten)"),
-    ("O11 en O12", "8 tegen 8", "Ja", "2 × 30 minuten", "Time-out na 15 minuten per helft (4 kwarten)"),
-]
-tabel = "".join(f"<tr><th scope='row'>{a}</th><td>{b}</td><td>{c}</td><td>{d}</td><td>{e}</td></tr>" for a, b, c, d, e in rows)
-knvb_faq = [
-    ("Hoe lang duurt een wedstrijd bij O8?", "Twee helften van twintig minuten, met in elke helft na tien minuten een korte time-out. Zo speel je in feite vier kwarten van tien minuten."),
-    ("Spelen pupillen met een keeper?", "Vanaf O8 wel. Bij O7 wordt 4 tegen 4 gespeeld zonder keeper."),
-    ("Wanneer mag je wisselen bij de pupillen?", "Bij de pupillen mag je onbeperkt wisselen. In de praktijk doen trainers dat bij de time-outs en in de rust."),
-]
-page("/knvb-wedstrijdvormen/",
-     "KNVB-wedstrijdvormen O7 t/m O12: speelduur, spelers en wisselen",
-     "Overzicht van de KNVB-wedstrijdvormen per leeftijd: aantal spelers, wel of geen keeper, speelduur en handige wisselmomenten, van O7 tot en met O12.",
-     f"""
-<section class="prose">
-  <h1>KNVB-wedstrijdvormen per leeftijd</h1>
-  <p class="lead">Handig overzicht voor jeugdtrainers: hoeveel spelers, wel of geen keeper, hoe lang er gespeeld wordt en welke wisselmomenten daarbij passen. Bedoeld als spiekbriefje langs de lijn; de officiële regels staan op knvb.nl.</p>
-
-  <div class="tablewrap"><table>
-    <caption>Wedstrijdvormen en speelduur per leeftijdscategorie (seizoen 2026/'27)</caption>
-    <thead><tr><th scope="col">Leeftijd</th><th scope="col">Vorm</th><th scope="col">Keeper</th><th scope="col">Speelduur</th><th scope="col">Handige wisselmomenten</th></tr></thead>
-    <tbody>{tabel}</tbody>
-  </table></div>
-  <p>Elke helft heeft halverwege een korte time-out. In de praktijk speel je dus vier kwarten, met de time-outs en de rust als wisselmomenten.</p>
-  <p>Alles over één leeftijd, met spelregels, speeltijd, opstelling en wisselschema: <a href="/jo6/">JO6</a>, <a href="/jo7/">JO7</a>, <a href="/jo8/">JO8</a>, <a href="/jo9/">JO9</a>, <a href="/jo10/">JO10</a>, <a href="/jo11/">JO11</a> en <a href="/jo12/">JO12</a>.</p>
-
-  <h2>Wat betekent dit voor je speeltijd?</h2>
-  <p>Bij 6 tegen 6 met 2 × 20 minuten zijn er 240 speelminuten te verdelen (zes plekken maal veertig minuten). Met negen kinderen komt dat neer op ongeveer 27 minuten per kind, keepen meegerekend. Zijn er twaalf kinderen, dan blijft er twintig minuten per kind over, en wordt het belangrijker om over de weken heen bij te houden wie minder speelde.</p>
-
-  <h2>Wisselen bij de pupillen</h2>
-  <p>Bij de pupillen mag je onbeperkt wisselen. De time-outs en de rust zijn de natuurlijke momenten. Wissel je alleen in de rust, dan speelt iedereen een hele of een halve wedstrijd, en zijn de verschillen groot.</p>
-</section>
-
-{faq_html(knvb_faq)}
-{cta("Laat de app de regels toepassen", "Kies het niveau van je team en Opstelling gebruikt automatisch de juiste speelduur, spelers en wisselmomenten.")}
-
-{gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/prijzen/")}
-""", extra_ld=faq_ld(knvb_faq))
-
-# ------------------------------------------------ pagina's per leeftijd
-# Eén pagina per leeftijd (O9 = JO9), omdat trainers en ouders per leeftijd zoeken:
-# "spelregels jo9", "speeltijd jo9", "jo9 hoeveel spelers". Bron: de KNVB-infographics
-# 4 tegen 4, 6 tegen 6 en 8 tegen 8 voor seizoen 2026/'27 en de KNVB-pagina over O6.
-# Sinds 2026/'27 heet JO9 officieel O9; er wordt nog vooral op "jo9" gezocht.
-
-def speeltijd_per_kind(plekken, minuten, aantallen, blok="kwart"):
-    """Tabel: hoeveel minuten elk kind ongeveer speelt bij een bepaald aantal spelers."""
-    rijen = "".join(f"<tr><th scope='row'>{n} spelers</th><td>{n - plekken}</td><td>ongeveer {afgerond(plekken * minuten / n)} minuten</td></tr>"
-                    for n in aantallen)
-    return f"""<div class="tablewrap"><table>
-    <caption>Speeltijd per kind bij {plekken} tegen {plekken} en {minuten} minuten speeltijd ({plekken * minuten} speelminuten)</caption>
-    <thead><tr><th scope="col">Aantal spelers</th><th scope="col">Wissels per {blok}</th><th scope="col">Speeltijd per kind</th></tr></thead>
-    <tbody>{rijen}</tbody>
-  </table></div>"""
-
-
-def in_het_kort(rijen, onderschrift):
-    regels = "".join(f"<tr><th scope='row'>{a}</th><td>{b}</td></tr>" for a, b in rijen)
-    return f"""<div class="tablewrap"><table>
-    <caption>{onderschrift}</caption>
-    <tbody>{regels}</tbody>
-  </table></div>"""
-
-
-def regellijst(regels):
-    return "<ul>" + "".join(f"<li><strong>{kop}:</strong> {tekst}</li>" for kop, tekst in regels) + "</ul>"
-
-
 # De spelregels per wedstrijdvorm, samengevat uit de KNVB-infographics
 VORM = {
     4: {
@@ -737,6 +666,96 @@ VORM = {
         ],
     },
 }
+
+# ------------------------------------------------ knvb wedstrijdvormen
+def veld_tabel():
+    """Veld, doelen, keepersgebied en bal per leeftijd, uit dezelfde KNVB-gegevens als de leeftijdspagina's."""
+    rijen = [("O7", 4, "Geen keeper"), ("O8, O9 en O10", 6, "Tot 7 meter van de achterlijn"),
+             ("O11 en O12", 8, "Tot de hoogte van de 16 meter")]
+    regels = "".join(f"<tr><th scope='row'>{leeftijd}</th><td data-label='Veld'>{VORM[n]['veld']}</td><td data-label='Doelen'>{VORM[n]['doel'].split(',')[0] if n == 4 else VORM[n]['doel']}</td>"
+                     f"<td data-label='Keepersgebied'>{gebied}</td><td data-label='Bal'>{VORM[n]['bal']}</td></tr>"
+                     for leeftijd, n, gebied in rijen)
+    return f"""<div class="tablewrap"><table class="velden">
+    <caption>Veldafmetingen, doelen en bal per leeftijdscategorie (KNVB, seizoen {SEIZOEN})</caption>
+    <thead><tr><th scope="col">Leeftijd</th><th scope="col">Veld</th><th scope="col">Doelen</th><th scope="col">Keepersgebied</th><th scope="col">Bal</th></tr></thead>
+    <tbody>{regels}</tbody>
+  </table></div>"""
+
+
+
+rows = [
+    ("O7", "4 tegen 4", "Nee", "3 × 15 minuten", "Tussen de blokjes van 7,5 minuut (6 blokjes)"),
+    ("O8 en O9", "6 tegen 6", "Ja", "2 × 20 minuten", "Time-out na 10 minuten per helft (4 kwarten)"),
+    ("O10", "6 tegen 6", "Ja", "2 × 25 minuten", "Time-out na 12,5 minuut per helft (4 kwarten)"),
+    ("O11 en O12", "8 tegen 8", "Ja", "2 × 30 minuten", "Time-out na 15 minuten per helft (4 kwarten)"),
+]
+tabel = "".join(f"<tr><th scope='row'>{a}</th><td>{b}</td><td>{c}</td><td>{d}</td><td>{e}</td></tr>" for a, b, c, d, e in rows)
+knvb_faq = [
+    ("Hoe lang duurt een wedstrijd bij O8?", "Twee helften van twintig minuten, met in elke helft na tien minuten een korte time-out. Zo speel je in feite vier kwarten van tien minuten."),
+    ("Spelen pupillen met een keeper?", "Vanaf O8 wel. Bij O7 wordt 4 tegen 4 gespeeld zonder keeper."),
+    ("Wanneer mag je wisselen bij de pupillen?", "Bij de pupillen mag je onbeperkt wisselen. In de praktijk doen trainers dat bij de time-outs en in de rust."),
+]
+page("/knvb-wedstrijdvormen/",
+     "KNVB-wedstrijdvormen O7 t/m O12: speelduur, spelers en wisselen",
+     "Overzicht van de KNVB-wedstrijdvormen per leeftijd: aantal spelers, wel of geen keeper, speelduur en handige wisselmomenten, van O7 tot en met O12.",
+     f"""
+<section class="prose">
+  <h1>KNVB-wedstrijdvormen per leeftijd</h1>
+  <p class="lead">Handig overzicht voor jeugdtrainers: hoeveel spelers, wel of geen keeper, hoe lang er gespeeld wordt en welke wisselmomenten daarbij passen. Bedoeld als spiekbriefje langs de lijn; de officiële regels staan op knvb.nl.</p>
+
+  <div class="tablewrap"><table>
+    <caption>Wedstrijdvormen en speelduur per leeftijdscategorie (seizoen 2026/'27)</caption>
+    <thead><tr><th scope="col">Leeftijd</th><th scope="col">Vorm</th><th scope="col">Keeper</th><th scope="col">Speelduur</th><th scope="col">Handige wisselmomenten</th></tr></thead>
+    <tbody>{tabel}</tbody>
+  </table></div>
+  <p>Elke helft heeft halverwege een korte time-out. In de praktijk speel je dus vier kwarten, met de time-outs en de rust als wisselmomenten.</p>
+  <p>Alles over één leeftijd, met spelregels, speeltijd, opstelling en wisselschema: <a href="/jo6/">JO6</a>, <a href="/jo7/">JO7</a>, <a href="/jo8/">JO8</a>, <a href="/jo9/">JO9</a>, <a href="/jo10/">JO10</a>, <a href="/jo11/">JO11</a> en <a href="/jo12/">JO12</a>.</p>
+
+  <h2>Veldafmetingen per leeftijd</h2>
+  <p>Hoe groot het veld is, hangt af van de wedstrijdvorm. Ook de doelen, het keepersgebied en de bal verschillen per leeftijd.</p>
+  {veld_tabel()}
+
+  <h2>Wat betekent dit voor je speeltijd?</h2>
+  <p>Bij 6 tegen 6 met 2 × 20 minuten zijn er 240 speelminuten te verdelen (zes plekken maal veertig minuten). Met negen kinderen komt dat neer op ongeveer 27 minuten per kind, keepen meegerekend. Zijn er twaalf kinderen, dan blijft er twintig minuten per kind over, en wordt het belangrijker om over de weken heen bij te houden wie minder speelde.</p>
+
+  <h2>Wisselen bij de pupillen</h2>
+  <p>Bij de pupillen mag je onbeperkt wisselen. De time-outs en de rust zijn de natuurlijke momenten. Wissel je alleen in de rust, dan speelt iedereen een hele of een halve wedstrijd, en zijn de verschillen groot.</p>
+</section>
+
+{faq_html(knvb_faq)}
+{cta("Laat de app de regels toepassen", "Kies het niveau van je team en Opstelling gebruikt automatisch de juiste speelduur, spelers en wisselmomenten.")}
+
+{gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/prijzen/")}
+""", extra_ld=faq_ld(knvb_faq))
+
+# ------------------------------------------------ pagina's per leeftijd
+# Eén pagina per leeftijd (O9 = JO9), omdat trainers en ouders per leeftijd zoeken:
+# "spelregels jo9", "speeltijd jo9", "jo9 hoeveel spelers". Bron: de KNVB-infographics
+# 4 tegen 4, 6 tegen 6 en 8 tegen 8 voor seizoen 2026/'27 en de KNVB-pagina over O6.
+# Sinds 2026/'27 heet JO9 officieel O9; er wordt nog vooral op "jo9" gezocht.
+
+def speeltijd_per_kind(plekken, minuten, aantallen, blok="kwart"):
+    """Tabel: hoeveel minuten elk kind ongeveer speelt bij een bepaald aantal spelers."""
+    rijen = "".join(f"<tr><th scope='row'>{n} spelers</th><td>{n - plekken}</td><td>ongeveer {afgerond(plekken * minuten / n)} minuten</td></tr>"
+                    for n in aantallen)
+    return f"""<div class="tablewrap"><table>
+    <caption>Speeltijd per kind bij {plekken} tegen {plekken} en {minuten} minuten speeltijd ({plekken * minuten} speelminuten)</caption>
+    <thead><tr><th scope="col">Aantal spelers</th><th scope="col">Wissels per {blok}</th><th scope="col">Speeltijd per kind</th></tr></thead>
+    <tbody>{rijen}</tbody>
+  </table></div>"""
+
+
+def in_het_kort(rijen, onderschrift):
+    regels = "".join(f"<tr><th scope='row'>{a}</th><td>{b}</td></tr>" for a, b in rijen)
+    return f"""<div class="tablewrap"><table>
+    <caption>{onderschrift}</caption>
+    <tbody>{regels}</tbody>
+  </table></div>"""
+
+
+def regellijst(regels):
+    return "<ul>" + "".join(f"<li><strong>{kop}:</strong> {tekst}</li>" for kop, tekst in regels) + "</ul>"
+
 
 OPSTELLINGEN = {
     4: [("1-2-1", "één speler achter, twee op de zijkanten en één voorin. Een ruit, met veel driehoekjes om naar elkaar te passen."),
@@ -1085,7 +1104,7 @@ for spelvorm, v in OPSTELLING_VORM.items():
 <section class="prose">
   {kruimelpad(f"Opstelling {vorm}")}
   <h1>Opstelling {vorm}</h1>
-  <p class="lead">Bij {v['leeftijden']} speel je {vorm}: een keeper en {v['veldspelers']} veldspelers. Hier vind je {GETAL_WOORD[len(formaties)].lower()} opstellingen met een tekening, wat elke positie doet, en wanneer je welke kiest.</p>
+  <p class="lead">Bij {v['leeftijden']} speel je {vorm}: een keeper en {v['veldspelers']} veldspelers. Je speelt op een veld van {VORM[spelvorm]['veld']}, met pupillendoelen van 5 × 2 meter. Hier vind je {GETAL_WOORD[len(formaties)].lower()} opstellingen met een tekening, wat elke positie doet, en wanneer je welke kiest.</p>
   <p class="kort-antwoord"><strong>In het kort:</strong> {v['kort']}</p>
 
   <h2>Zo lees je een opstelling</h2>
