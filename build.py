@@ -1135,6 +1135,89 @@ for spelvorm, v in OPSTELLING_VORM.items():
 {gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/")}
 """, extra_ld=faq_ld(v['faq']), kruimel=f"Opstelling {vorm}")
 
+# --------------------------------------------- wisselschema per spelvorm
+# Zoekvraag "wisselschema 6 tegen 6": per aantal spelers een uitgerekend schema (wisselschemas.py).
+# Onder elk schema staat eerlijk wat een vast schema niet oplost; dat doet de app.
+import wisselschemas
+
+
+def opsomming(namen):
+    return namen[0] if len(namen) == 1 else ", ".join(namen[:-1]) + " en " + namen[-1]
+
+
+MOMENT_NAAM = ["Na 10 minuten (time-out)", "In de rust", "Na 30 minuten (time-out)"]
+
+
+def wisselschema_per_aantal(spelers, plekken, kwart_minuten):
+    uitkomst = wisselschemas.schema(spelers, plekken)
+    controleer_schema(uitkomst, plekken)
+    momenten = []
+    for naam, (erin, eruit, keeper) in zip(MOMENT_NAAM, wisselschemas.wisselmomenten(uitkomst)):
+        zin = f"{opsomming(erin)} erin voor {opsomming(eruit)}." if erin else "Geen wissel."
+        if keeper:
+            zin += f" {keeper} gaat op doel."
+        momenten.append(f"<li><strong>{naam}:</strong> {zin}</li>")
+    gespeeld = {naam: sum(1 for r in rollen if r != "W") for naam, rollen in uitkomst}
+    minst = min(gespeeld.values())
+    if minst == max(gespeeld.values()):
+        niet = (f"Iedereen speelt {getal(minst * kwart_minuten)} minuten. Maar meldt er vrijdag iemand af of komt er een kind te laat, "
+                "dan klopt dit schema niet meer. De app rekent het dan opnieuw uit, met de al gespeelde minuten erin.")
+    else:
+        weinig = [n for n, k in gespeeld.items() if k == minst]
+        veel = [n for n, k in gespeeld.items() if k != minst]
+        if len(weinig) <= len(veel):
+            niet = (f"{opsomming(weinig)} {'speelt' if len(weinig) == 1 else 'spelen'} deze keer een kwart minder. "
+                    f"De volgende wedstrijd {'moet hij of zij' if len(weinig) == 1 else 'moeten zij'} als eerste spelen, en dat moet je dan wel onthouden. ")
+        else:   # noem het kleinste groepje: wie een kwart langer speelt
+            niet = (f"{opsomming(veel)} {'speelt' if len(veel) == 1 else 'spelen'} deze keer een kwart langer dan de rest. "
+                    "Wie korter speelde, moet de volgende wedstrijd voorrang krijgen, en dat moet je dan wel onthouden. ")
+        niet += "Opstelling doet dat voor je, over het hele seizoen."
+    return f"""<h2 id="spelers-{spelers}">Wisselschema 6 tegen 6 met {spelers} spelers</h2>
+  {wisselschema_tabel(f"Wisselschema 6 tegen 6 met {spelers} spelers, 2 × 20 minuten (JO8 en JO9)", kwart_minuten, uitkomst)}
+  <ul>{''.join(momenten)}</ul>
+  <p class="niet-in-schema"><strong>Wat dit schema niet doet:</strong> {niet}</p>"""
+
+
+ws6_faq = [
+    ("Hoe vaak wissel je bij 6 tegen 6?", "Meestal drie keer: bij de time-out in de eerste helft, in de rust en bij de time-out in de tweede helft. Zo speel je vier kwarten en ligt het spel bij elke wissel toch al stil."),
+    ("Hoeveel speeltijd krijgt elk kind bij 6 tegen 6?", "Bij 2 × 20 minuten zijn er 240 speelminuten te verdelen. Met acht kinderen speelt iedereen 30 minuten; met tien kinderen ongeveer 24 minuten per kind."),
+    ("Wie gaat er eerst naar de kant?", "Dat maakt binnen één wedstrijd weinig uit, zolang het rondgaat: in deze schema's zit zo min mogelijk iemand twee kwarten achter elkaar aan de kant. Belangrijker is het over meerdere wedstrijden: wie deze keer minder speelde, begint de volgende keer."),
+    ("Wat doe je als er iemand afmeldt of te laat komt?", "Dan neem je het schema van het nieuwe aantal spelers, maar met de minuten die al gespeeld zijn klopt dat niet precies meer. In Opstelling geef je de wijziging door en rekent de app de rest van de wedstrijd opnieuw uit."),
+]
+ws6_blokken = "\n\n  ".join(wisselschema_per_aantal(n, 6, 10) for n in range(7, 13))
+ws6_inhoud = " · ".join(f'<a href="#spelers-{n}">{n} spelers</a>' for n in range(7, 13))
+page("/wisselschema-6-tegen-6/",
+     "Wisselschema 6 tegen 6: schema's voor 7 tot en met 12 spelers",
+     "Wisselschema voor 6 tegen 6 (JO8, JO9 en JO10) met 7, 8, 9, 10, 11 of 12 spelers: per kwart wie speelt, keept of wisselt, met de speeltijd per kind.",
+     f"""
+<section class="prose">
+  {kruimelpad("Wisselschema 6 tegen 6")}
+  <h1>Wisselschema 6 tegen 6</h1>
+  <p class="lead">Kant-en-klare wisselschema's voor 6 tegen 6, bij JO8, JO9 en JO10. Kies het aantal spelers dat je zaterdag hebt en zie per kwart wie speelt, wie keept en wie aan de kant staat.</p>
+  <p class="kort-antwoord"><strong>In het kort:</strong> bij 6 tegen 6 wissel je bij de twee time-outs en in de rust. Dan speel je vier kwarten van 10 minuten (bij JO10 12,5 minuut). Met 8 spelers speelt iedereen precies 30 minuten; met meer of minder spelers verschilt het één kwart.</p>
+  <p>Naar het schema voor: {ws6_inhoud}</p>
+
+  <h2>Speeltijd per kind</h2>
+  {speeltijd_per_kind(6, 40, list(range(7, 13)))}
+  <p>In de schema's hieronder keept Daan de eerste helft en Milan de tweede. Komt het niet precies uit, dan spelen de keepers het langst: wie een helft op doel staat, voetbalt de andere helft in het veld. Bij JO10 duurt elk kwart 12,5 minuut; de verdeling blijft hetzelfde.</p>
+
+  {ws6_blokken}
+
+  <h2>Wat een vast schema niet oplost</h2>
+  <ul>
+    <li><strong>Het seizoen.</strong> Een schema is eerlijk binnen één wedstrijd. Wie deze week minder speelde, moet de volgende keer voorrang krijgen, en dat moet je bijhouden.</li>
+    <li><strong>Afmeldingen en late aankomst.</strong> Komt er iemand later of valt er iemand uit, dan klopt het schema niet meer.</li>
+    <li><strong>Posities.</strong> Een schema zegt wie speelt, niet wie waar staat. Opstellingen staan bij <a href="/opstelling-6-tegen-6/">opstelling 6 tegen 6</a>.</li>
+  </ul>
+  <p>Opstelling doet dit allemaal voor je: je vinkt aan wie er is, en de app maakt het schema met de minuten van eerdere wedstrijden erin. Tijdens de wedstrijd krijg je een seintje bij elk wisselmoment. Meer uitleg staat bij <a href="/wisselschema-maken/">wisselschema maken</a>; de regels per leeftijd bij <a href="/jo8/">JO8</a>, <a href="/jo9/">JO9</a> en <a href="/jo10/">JO10</a>.</p>
+</section>
+
+{faq_html(ws6_faq)}
+{cta("Laat de app je wisselschema maken", f"Vink aan wie er is, en Opstelling maakt het schema met de speeltijd van eerdere wedstrijden erin. {GRATIS_ZIN}.")}
+
+{gidsen("/wisselschema-maken/", "/speeltijd-eerlijk-verdelen/", "/knvb-wedstrijdvormen/")}
+""", extra_ld=faq_ld(ws6_faq), kruimel="Wisselschema 6 tegen 6")
+
 # ------------------------------------------------ tips en tops per speler
 VAARDIGHEDEN_BAL = ["Passen over de grond", "Passen door de lucht", "Schieten op doel", "Aannemen in stilstand",
                     "Aannemen in beweging", "Dribbelen", "Drijven", "Passeren", "Positie kiezen"]

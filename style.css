@@ -329,3 +329,5 @@ h1,h2,h3{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
   table.taken th,table.taken td,table.velden th,table.velden td{display:block;border:0;padding:4px 14px}
   table.taken td::before,table.velden td::before{content:attr(data-label) ": ";font-weight:600}
 }
+/* Wisselschema per aantal spelers: wat het schema niet oplost, net onder elk schema */
+.prose .niet-in-schema{border-left:3px solid var(--grass);padding:4px 0 4px 14px;margin:12px 0 36px;color:var(--muted)}
