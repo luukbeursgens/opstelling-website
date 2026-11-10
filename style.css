@@ -321,3 +321,11 @@ h1,h2,h3{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
 .formatie img{width:100%;height:auto;display:block;border-radius:14px}
 .formatie h3{margin-top:0}
 @media (max-width:560px){.formatie{grid-template-columns:minmax(0,1fr)}.formatie figure{max-width:240px}}
+/* Taken per linie: op de telefoon per linie onder elkaar in plaats van vier kolommen */
+@media (max-width:560px){
+  table.taken thead{display:none}
+  table.taken tr{display:block;padding:10px 0;border-bottom:1px solid var(--rule)}
+  table.taken tbody tr:last-child{border-bottom:0}
+  table.taken th,table.taken td{display:block;border:0;padding:4px 14px}
+  table.taken td::before{content:attr(data-label) ": ";font-weight:600}
+}

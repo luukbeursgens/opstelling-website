@@ -741,7 +741,7 @@ VORM = {
 OPSTELLINGEN = {
     4: [("1-2-1", "één speler achter, twee op de zijkanten en één voorin. Een ruit, met veel driehoekjes om naar elkaar te passen."),
         ("2-2", "twee achter en twee voor. Eenvoudig, maar met minder verbinding tussen achter en voor.")],
-    6: [("1-2-1-2", "een keeper, twee verdedigers, één middenvelder en twee aanvallers. Een ruit, met veel driehoekjes om naar elkaar te passen."),
+    6: [("1-2-1-2", "een keeper, twee verdedigers, één middenvelder en twee aanvallers. De dobbelsteen, met veel driehoekjes om naar elkaar te passen."),
         ("1-2-2-1", "een keeper, twee verdedigers, twee middenvelders en één spits. Meer spelers in het midden, minder voorin.")],
     8: [("1-3-3-1", "een keeper, drie verdedigers, drie middenvelders en één spits. Evenwichtig, met de ruimte goed verdeeld over het veld."),
         ("1-2-3-2", "een keeper, twee verdedigers, drie middenvelders en twee aanvallers. Aanvallender, met minder spelers achterin.")],
@@ -942,8 +942,8 @@ page("/jo6/",
 import veldtekening
 
 FORMATIES_6 = [
-    {"app": "2-1-2", "naam": "1-2-1-2", "bijnaam": "de ruit",
-     "wat": "Twee verdedigers, één middenvelder en twee aanvallers. De spelers staan als een ruit rond de middenvelder, zodat er overal driehoekjes zijn om de bal rond te spelen.",
+    {"app": "2-1-2", "naam": "1-2-1-2", "bijnaam": "de dobbelsteen",
+     "wat": "Twee verdedigers, één middenvelder en twee aanvallers. De spelers staan als de vijf op een dobbelsteen, zodat er overal driehoekjes zijn om de bal rond te spelen.",
      "sterk": "Evenwichtig: twee spelers achter, twee voor, en de middenvelder verbindt ze. Iedereen heeft een medespeler dichtbij om naar te passen.",
      "let_op": "De middenvelder heeft het druk, met verdedigen én aanvallen. Wissel die plek vaak, zodat het niet steeds hetzelfde kind is.",
      "past": "Een goede standaard voor elk team. Met deze opstelling begint ook de app."},
@@ -957,8 +957,8 @@ FORMATIES_6 = [
      "sterk": "Veel spelers voorin, dus veel kansen om te scoren.",
      "let_op": "Achterin staan alleen de verdediger en de keeper. Bij balverlies moeten de middenvelders snel terug.",
      "past": "Tegen een zwakkere tegenstander, of als je juist het aanvallen wilt oefenen."},
-    {"app": "1-3-1", "naam": "1-1-3-1", "bijnaam": "met een vol middenveld",
-     "wat": "Eén verdediger, drie middenvelders en één spits.",
+    {"app": "1-3-1", "naam": "1-1-3-1", "bijnaam": "de ruit",
+     "wat": "Eén verdediger, drie middenvelders en één spits. Samen vormen ze een ruit, met het middenveld als breedste punt.",
      "sterk": "Er staat iemand links, rechts en in het midden van het veld. Zo leren kinderen de hele breedte van het veld te gebruiken.",
      "let_op": "De middenvelders aan de zijkant moeten veel lopen, want ze helpen zowel voor als achter.",
      "past": "Teams die al wat samenspelen en de breedte willen leren gebruiken."},
@@ -978,7 +978,7 @@ def formatie_blok(f, nummer):
     versie = hashlib.sha256(svg.encode()).hexdigest()[:10]
     return f"""<div class="formatie" id="f{nummer}">
     <figure><img src="/img/{bestand}?v={versie}" width="300" height="425" loading="lazy"
-      alt="Opstelling 6 tegen 6 in {f['naam']} ({f['bijnaam']}): {f['wat'][0].lower()}{f['wat'][1:-1]}, met de keeper in het doel"></figure>
+      alt="Opstelling 6 tegen 6 in {f['naam']} ({f['bijnaam']}): {f['wat'].split('.')[0].replace('Eén', 'één').lower()}, met de keeper in het doel"></figure>
     <div>
       <h3>{nummer}. {f['naam']}, {f['bijnaam']}</h3>
       <p>{f['wat']}</p>
@@ -992,7 +992,7 @@ def formatie_blok(f, nummer):
 
 
 op6_faq = [
-    ("Wat is de beste opstelling bij 6 tegen 6?", "Een goede standaard is 1-2-1-2, de ruit: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Die is evenwichtig en geeft elk kind een medespeler dichtbij. Tegen een sterkere tegenstander kun je kiezen voor 1-2-2-1, met één spits."),
+    ("Wat is de beste opstelling bij 6 tegen 6?", "Een goede standaard is 1-2-1-2, de dobbelsteen: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Die is evenwichtig en geeft elk kind een medespeler dichtbij. Tegen een sterkere tegenstander kun je kiezen voor 1-2-2-1, met één spits."),
     ("Wat betekenen de cijfers, zoals 1-2-1-2?", "Je telt van achter naar voren: eerst de keeper, dan de verdedigers, de middenvelders en de aanvallers. 1-2-1-2 is dus een keeper, twee verdedigers, één middenvelder en twee aanvallers. Samen zijn dat de zes spelers op het veld."),
     ("Moet je bij JO8 al een vaste opstelling hebben?", "Dat hoeft niet. Bij de jongste kinderen is het genoeg dat ze weten of ze voor of achter staan. Een vaste opstelling helpt vooral om het veld goed te verdelen, zodat niet iedereen achter de bal aan rent."),
     ("Moet een kind steeds op dezelfde plek spelen?", "Liever niet. Kinderen worden betere voetballers als ze verschillende plekken leren kennen. Laat ze per wedstrijd of per kwart van plek wisselen, en laat iedereen eens keepen."),
@@ -1007,7 +1007,7 @@ page("/opstelling-6-tegen-6/",
   {kruimelpad("Opstelling 6 tegen 6")}
   <h1>Opstelling 6 tegen 6</h1>
   <p class="lead">Bij JO8, JO9 en JO10 speel je 6 tegen 6: een keeper en vijf veldspelers. Hier vind je vijf opstellingen met een tekening, wat elke positie doet, en wanneer je welke kiest.</p>
-  <p class="kort-antwoord"><strong>In het kort:</strong> een goede standaard bij 6 tegen 6 is 1-2-1-2, de ruit: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Tegen een sterkere tegenstander kies je 1-2-2-1, met één spits en meer spelers in het midden.</p>
+  <p class="kort-antwoord"><strong>In het kort:</strong> een goede standaard bij 6 tegen 6 is 1-2-1-2, de dobbelsteen: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Tegen een sterkere tegenstander kies je 1-2-2-1, met één spits en meer spelers in het midden.</p>
 
   <h2>Zo lees je een opstelling</h2>
   <p>Je telt van achter naar voren. Het eerste cijfer is de keeper, daarna komen de verdedigers, de middenvelders en de aanvallers. 1-2-1-2 betekent dus: een keeper, twee verdedigers, één middenvelder en twee aanvallers. Bij 6 tegen 6 tellen de cijfers samen altijd op tot zes.</p>
@@ -1016,12 +1016,18 @@ page("/opstelling-6-tegen-6/",
   {afbeeldingen_6}
 
   <h2>Wat doet elke positie?</h2>
-  <ul>
-    <li><strong>Keeper:</strong> houdt de bal uit het doel en begint de aanval. Bij 6 tegen 6 mag de keeper de bal in de handen hebben tot 7 meter van de achterlijn, de stippellijn in de tekeningen.</li>
-    <li><strong>Verdedigers:</strong> houden de aanvallers van de tegenstander tegen en spelen de bal naar voren. Bij balbezit mogen ze best mee naar voren.</li>
-    <li><strong>Middenvelders:</strong> verbinden de verdediging met de aanval. Ze helpen achterin en zoeken voorin de aanvallers op.</li>
-    <li><strong>Aanvallers:</strong> proberen te scoren en zetten de tegenstander onder druk als die de bal heeft.</li>
-  </ul>
+  <p>De KNVB deelt het voetbal op in drie teamtaken: <strong>aanvallen</strong>, <strong>verdedigen</strong> en <strong>omschakelen</strong>, het snelle moment waarop de bal van team wisselt. In de KNVB-trainingen in Rinus komen ze terug als bijvoorbeeld het opbouwen, kansen maken en benutten, het storen van de opbouw van de tegenstander en het op het juiste moment veroveren van de bal. Elke linie heeft in die drie taken een eigen rol:</p>
+  <div class="tablewrap"><table class="taken">
+    <caption>Taken per linie bij 6 tegen 6, ingedeeld naar de teamtaken van de KNVB</caption>
+    <thead><tr><th scope="col">Linie</th><th scope="col">Aanvallen</th><th scope="col">Verdedigen</th><th scope="col">Omschakelen</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Keeper</th><td data-label="Aanvallen">Begint de opbouw met een pass of dribbel</td><td data-label="Verdedigen">Houdt de bal uit het doel; mag hem in de handen nemen tot 7 meter</td><td data-label="Omschakelen">Speelt een gevangen bal snel uit naar een vrije medespeler</td></tr>
+      <tr><th scope="row">Verdedigers</th><td data-label="Aanvallen">Bouwen op en spelen de bal naar voren</td><td data-label="Verdedigen">Storen de aanvallers en voorkomen doelpunten</td><td data-label="Omschakelen">Zoeken bij balverlies snel hun plek terug</td></tr>
+      <tr><th scope="row">Middenvelders</th><td data-label="Aanvallen">Verbinden achter en voor, en maken kansen</td><td data-label="Verdedigen">Storen de opbouw van de tegenstander</td><td data-label="Omschakelen">Spelen een veroverde bal meteen vooruit</td></tr>
+      <tr><th scope="row">Aanvallers</th><td data-label="Aanvallen">Maken kansen en scoren</td><td data-label="Verdedigen">Storen de opbouw al voorin</td><td data-label="Omschakelen">Zetten na balverlies direct druk op de bal</td></tr>
+    </tbody>
+  </table></div>
+  <p>De drie teamtaken komen van de KNVB. De verdeling per linie is ons advies, geen regel. Bij de pupillen doet iedereen nog veel van alles, en dat is goed: zo leren kinderen het hele spel.</p>
 
   <h2>Tips voor het kiezen</h2>
   <ul>
