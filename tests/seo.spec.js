@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
-const PAGINAS = ['/', '/prijzen/', '/wisselschema-maken/', '/speeltijd-eerlijk-verdelen/', '/knvb-wedstrijdvormen/', '/tips-en-tops-per-speler/', '/voetbal-nl-kalender-koppelen/', '/jo6/', '/jo7/', '/jo8/', '/jo9/', '/jo10/', '/jo11/', '/jo12/', '/opstelling-6-tegen-6/', '/opstelling-8-tegen-8/', '/wisselschema-6-tegen-6/', '/contact/'];
+const PAGINAS = ['/', '/prijzen/', '/wisselschema-maken/', '/speeltijd-eerlijk-verdelen/', '/knvb-wedstrijdvormen/', '/tips-en-tops-per-speler/', '/voetbal-nl-kalender-koppelen/', '/jo6/', '/jo7/', '/jo8/', '/jo9/', '/jo10/', '/jo11/', '/jo12/', '/opstelling-6-tegen-6/', '/opstelling-8-tegen-8/', '/wisselschema-6-tegen-6/', '/wisselschema-8-tegen-8/', '/contact/'];
 const TIPS = '/tips-en-tops-per-speler/', AGENDA = '/voetbal-nl-kalender-koppelen/';
 const SITE = fs.readFileSync(path.join(process.cwd(), 'build.py'), 'utf8').match(/^SITE = "([^"]+)"/m)[1];   // het adres uit build.py
 const titels = new Set(), beschrijvingen = new Set();
