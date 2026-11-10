@@ -5,7 +5,11 @@ De plekken op het veld worden op dezelfde manier berekend als in de app
 vaste hoogtes, en per linie gelijk over de breedte verdeeld.
 """
 
-NAMEN = ["Daan", "Milan", "Noud", "Luca", "Finn", "Jesse", "Sven", "Bram", "Stijn"]
+from wisselschemas import NAMEN
+
+# Op het veld staan soms vier spelers naast elkaar; daar passen alleen korte namen.
+# Dus de korte namen uit de gemengde lijst, met de keepers Daan en Milan vooraan.
+NAMEN = [n for n in NAMEN if len(n) <= 5]
 VELD_BREEDTE = 300   # pixels; de lengte volgt uit de echte maten van het veld
 # Per wedstrijdvorm de maten volgens de KNVB, in meters: breedte, lengte, keepersgebied vanaf de achterlijn
 VELD_MATEN = {6: (30, 42.5, 7), 8: (42.5, 64, 16)}

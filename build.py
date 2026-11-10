@@ -484,17 +484,17 @@ def wisselschema_tabel(onderschrift, kwart_minuten, schema, blok="Kwart"):
   </table></div>"""
 
 
-WS_6_MET_8 = [("Daan", "KKWV"), ("Milan", "VWKK"), ("Luca", "VWVV"), ("Noud", "VVWV"),
-              ("Finn", "VVVW"), ("Jesse", "VVVW"), ("Sven", "WVVV"), ("Bram", "WVVV")]
-WS_6_MET_9 = [("Daan", "KKWV"), ("Milan", "VWKK"), ("Luca", "VWVV"), ("Noud", "VWVV"),
-              ("Finn", "VVWV"), ("Jesse", "VVWV"), ("Sven", "WVVW"), ("Bram", "WVVW"), ("Stijn", "WVVW")]
-WS_8_MET_10 = [("Daan", "KKVV"), ("Milan", "VVKK"), ("Luca", "WVVV"), ("Noud", "WVVV"), ("Finn", "VWVV"),
-               ("Jesse", "VWVV"), ("Sven", "VVWV"), ("Bram", "VVWV"), ("Stijn", "VVVW"), ("Ruben", "VVVW")]
-WS_8_MET_11 = [("Daan", "KKWV"), ("Milan", "WVKK"), ("Luca", "WVVW"), ("Noud", "WVVV"), ("Finn", "VWVV"),
-               ("Jesse", "VWVV"), ("Sven", "VWVV"), ("Bram", "VVWV"), ("Stijn", "VVWV"), ("Ruben", "VVVW"), ("Thijs", "VVVW")]
+WS_6_MET_8 = [("Daan", "KKWV"), ("Milan", "VWKK"), ("Luca", "VWVV"), ("Yusuf", "VVWV"),
+              ("Finn", "VVVW"), ("Mohammed", "VVVW"), ("Sven", "WVVV"), ("Noor", "WVVV")]
+WS_6_MET_9 = [("Daan", "KKWV"), ("Milan", "VWKK"), ("Luca", "VWVV"), ("Yusuf", "VWVV"),
+              ("Finn", "VVWV"), ("Mohammed", "VVWV"), ("Sven", "WVVW"), ("Noor", "WVVW"), ("Ilias", "WVVW")]
+WS_8_MET_10 = [("Daan", "KKVV"), ("Milan", "VVKK"), ("Luca", "WVVV"), ("Yusuf", "WVVV"), ("Finn", "VWVV"),
+               ("Mohammed", "VWVV"), ("Sven", "VVWV"), ("Noor", "VVWV"), ("Ilias", "VVVW"), ("Amir", "VVVW")]
+WS_8_MET_11 = [("Daan", "KKWV"), ("Milan", "WVKK"), ("Luca", "WVVW"), ("Yusuf", "WVVV"), ("Finn", "VWVV"),
+               ("Mohammed", "VWVV"), ("Sven", "VWVV"), ("Noor", "VVWV"), ("Ilias", "VVWV"), ("Amir", "VVVW"), ("Lina", "VVVW")]
 # 4 tegen 4 zonder keeper: zes blokjes van 7,5 minuut, steeds een ander tweetal aan de kant
-WS_4_MET_6 = [("Daan", "VVWVVW"), ("Milan", "VVWVVW"), ("Luca", "VWVVWV"), ("Noud", "VWVVWV"),
-              ("Finn", "WVVWVV"), ("Jesse", "WVVWVV")]
+WS_4_MET_6 = [("Daan", "VVWVVW"), ("Milan", "VVWVVW"), ("Luca", "VWVVWV"), ("Yusuf", "VWVVWV"),
+              ("Finn", "WVVWVV"), ("Mohammed", "WVVWVV")]
 for _schema, _plekken in [(WS_6_MET_8, 6), (WS_6_MET_9, 6), (WS_8_MET_10, 8), (WS_8_MET_11, 8), (WS_4_MET_6, 4)]:
     controleer_schema(_schema, _plekken)
 
@@ -528,10 +528,10 @@ page("/wisselschema-maken/",
   <p>Hieronder twee voorbeelden. Schema's voor 7 tot en met 12 spelers staan bij <a href="/wisselschema-6-tegen-6/">wisselschema 6 tegen 6</a>.</p>
   <p>Bij O8 en O9 speel je 2 × 20 minuten, dus vier kwarten van tien minuten. Met acht spelers zitten er elk kwart twee kinderen aan de kant, en speelt iedereen precies 30 minuten. Daan keept de eerste helft, Milan de tweede.</p>
   {wisselschema_tabel("Wisselschema 6 tegen 6 met 8 spelers, 2 × 20 minuten (O8 en O9)", 10, WS_6_MET_8)}
-  <p>Wisselmomenten: na 10 minuten Sven en Bram erin voor Milan en Luca. In de rust Milan (keeper) en Luca erin voor Daan en Noud. Na 30 minuten Daan en Noud erin voor Finn en Jesse.</p>
+  <p>Wisselmomenten: na 10 minuten Sven en Noor erin voor Milan en Luca. In de rust Milan (keeper) en Luca erin voor Daan en Yusuf. Na 30 minuten Daan en Yusuf erin voor Finn en Mohammed.</p>
 
   <h3>6 tegen 6 met 9 spelers</h3>
-  <p>Met negen spelers zitten er elk kwart drie kinderen aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Bram en Stijn beginnen de volgende wedstrijd daarom in het veld. Wil je het binnen de wedstrijd gelijker, wissel dan ook halverwege een kwart.</p>
+  <p>Met negen spelers zitten er elk kwart drie kinderen aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Noor en Ilias beginnen de volgende wedstrijd daarom in het veld. Wil je het binnen de wedstrijd gelijker, wissel dan ook halverwege een kwart.</p>
   {wisselschema_tabel("Wisselschema 6 tegen 6 met 9 spelers, 2 × 20 minuten (O8 en O9)", 10, WS_6_MET_9)}
   <p>Bij O10 speel je 2 × 25 minuten. Het schema blijft hetzelfde, alleen duurt elk kwart 12,5 minuut. Alle regels voor 6 tegen 6 op een rij staan op de pagina over <a href="/jo9/">JO9</a>.</p>
 
@@ -784,7 +784,7 @@ LEEFTIJDEN = [
     {"o": 8, "geboren": 2019, "vorm": 6, "helft": 20, "titel": f"Spelregels JO8 {SEIZOEN}: speeltijd, veld en wisselschema",
      "beschrijving": "Alles over JO8 (O8): de overstap naar 6 tegen 6 met keeper, spelregels, hoe lang een wedstrijd duurt, het veld, een opstelling en een eerlijk wisselschema.",
      "inleiding": "Bij JO8, sinds dit seizoen officieel O8 (Onder 8), gaan kinderen van 4 tegen 4 naar 6 tegen 6. Voor het eerst staat er een keeper in het doel en is het veld een stuk groter.",
-     "schema": (WS_6_MET_9, None, "Wisselschema JO8, 6 tegen 6 met 9 spelers, 2 × 20 minuten", "Met negen kinderen staan er elk kwart drie aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Bram en Stijn beginnen de volgende wedstrijd daarom in het veld."),
+     "schema": (WS_6_MET_9, None, "Wisselschema JO8, 6 tegen 6 met 9 spelers, 2 × 20 minuten", "Met negen kinderen staan er elk kwart drie aan de kant. Dan komt het niet precies rond: zes kinderen spelen 30 minuten, drie kinderen 20. Sven, Noor en Ilias beginnen de volgende wedstrijd daarom in het veld."),
      "extra": "<h2>Voor het eerst een keeper</h2>\n  <p>Bij JO8 wil bijna elk kind wel eens op doel staan, of juist helemaal niet. Laat de keepers rouleren, bijvoorbeeld één keeper per helft. Zo leert iedereen het een keer, en voetbalt een keeper in de andere helft gewoon mee in het veld.</p>"},
     {"o": 9, "geboren": 2018, "vorm": 6, "helft": 20, "titel": f"Spelregels JO9 {SEIZOEN}: speeltijd, veld en wisselschema",
      "beschrijving": "Alles over JO9 (O9): spelregels, hoe lang een wedstrijd duurt, hoeveel spelers, het veld, een opstelling voor 6 tegen 6 en een eerlijk wisselschema.",

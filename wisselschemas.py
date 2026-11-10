@@ -8,7 +8,8 @@ eerlijk verdelen doet alleen de app.
 """
 from itertools import combinations
 
-NAMEN = ["Daan", "Milan", "Noud", "Luca", "Finn", "Jesse", "Sven", "Bram", "Stijn", "Ruben", "Thijs", "Sem", "Lars", "Jens"]
+# Voorbeeldnamen, bewust gemengd: jongens en meiden, en niet alleen Nederlandse namen
+NAMEN = ["Daan", "Milan", "Yusuf", "Luca", "Finn", "Mohammed", "Sven", "Noor", "Ilias", "Amir", "Lina", "Adam", "Sara", "Jens"]
 
 
 def bankbeurten(spelers, plekken, kwarten):
